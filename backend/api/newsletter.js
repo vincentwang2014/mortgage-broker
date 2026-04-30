@@ -2,7 +2,7 @@ import { kv } from '@vercel/kv';
 import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() { return new Resend(process.env.RESEND_API_KEY || 'placeholder'); }
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function sendWeeklyNewsletter() {
@@ -72,7 +72,7 @@ export async function sendWeeklyNewsletter() {
   let sent = 0;
   for (const email of subscribers) {
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: `ClearPath Mortgage <${process.env.FROM_EMAIL}>`,
         to: email, subject,
         html: html.replace('{{UNSUBSCRIBE_EMAIL}}', encodeURIComponent(email)),

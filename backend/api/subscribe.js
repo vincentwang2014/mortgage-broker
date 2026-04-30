@@ -3,7 +3,7 @@ import { kv } from '@vercel/kv';
 import { Resend } from 'resend';
 
 const router = express.Router();
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() { return new Resend(process.env.RESEND_API_KEY || 'placeholder'); }
 
 router.post('/', async (req, res) => {
   const { email, name } = req.body;
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     await kv.sadd('subscribers:list', subscriber.email);
 
     if (process.env.RESEND_API_KEY) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: `ClearPath Mortgage <${process.env.FROM_EMAIL || 'newsletter@clearpathmortgage.com'}>`,
         to: subscriber.email,
         subject: 'Welcome to ClearPath Mortgage Weekly',

@@ -2,7 +2,7 @@ import express from 'express';
 import { Resend } from 'resend';
 
 const router = express.Router();
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() { return new Resend(process.env.RESEND_API_KEY || 'placeholder'); }
 
 router.post('/', async (req, res) => {
   const { params, contact } = req.body;
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
 
   if (process.env.RESEND_API_KEY && process.env.BROKER_EMAIL) {
     try {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: `ClearPath Website <${process.env.FROM_EMAIL}>`,
         to: process.env.BROKER_EMAIL,
         subject: `New Quote Request — ${params.loanProgram} ${params.loanTerm}`,
