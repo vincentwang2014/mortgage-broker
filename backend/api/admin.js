@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 const router = express.Router();
 const __dir = dirname(fileURLToPath(import.meta.url));
 const PROMPT_PATH = join(__dir, '../config/prompt.md');
+const KNOWLEDGE_PATH = join(__dir, '../config/knowledge.md');
 
 function auth(req, res, next) {
   const password = process.env.ADMIN_PASSWORD;
@@ -24,8 +25,7 @@ router.post('/login', (req, res) => {
 
 router.get('/prompt', auth, (req, res) => {
   try {
-    const content = readFileSync(PROMPT_PATH, 'utf-8');
-    res.json({ content });
+    res.json({ content: readFileSync(PROMPT_PATH, 'utf-8') });
   } catch (e) {
     res.status(500).json({ error: 'Could not read prompt file' });
   }
@@ -33,14 +33,31 @@ router.get('/prompt', auth, (req, res) => {
 
 router.post('/prompt', auth, (req, res) => {
   const { content } = req.body;
-  if (typeof content !== 'string' || !content.trim()) {
-    return res.status(400).json({ error: 'content is required' });
-  }
+  if (typeof content !== 'string' || !content.trim()) return res.status(400).json({ error: 'content is required' });
   try {
     writeFileSync(PROMPT_PATH, content, 'utf-8');
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: 'Could not save prompt file' });
+  }
+});
+
+router.get('/knowledge', auth, (req, res) => {
+  try {
+    res.json({ content: readFileSync(KNOWLEDGE_PATH, 'utf-8') });
+  } catch (e) {
+    res.status(500).json({ error: 'Could not read knowledge file' });
+  }
+});
+
+router.post('/knowledge', auth, (req, res) => {
+  const { content } = req.body;
+  if (typeof content !== 'string') return res.status(400).json({ error: 'content is required' });
+  try {
+    writeFileSync(KNOWLEDGE_PATH, content, 'utf-8');
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Could not save knowledge file' });
   }
 });
 

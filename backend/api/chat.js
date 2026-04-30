@@ -8,15 +8,26 @@ const router = express.Router();
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const __dir = dirname(fileURLToPath(import.meta.url));
 const PROMPT_PATH = join(__dir, '../config/prompt.md');
+const KNOWLEDGE_PATH = join(__dir, '../config/knowledge.md');
 
 function loadSystemPrompt() {
+  let base = '';
   try {
-    if (existsSync(PROMPT_PATH)) return readFileSync(PROMPT_PATH, 'utf-8');
+    if (existsSync(PROMPT_PATH)) base = readFileSync(PROMPT_PATH, 'utf-8');
   } catch (e) {
     console.warn('[Chat] Could not read prompt.md, using fallback');
-  }
-  return `You are an expert mortgage advisor at ClearPath Mortgage, a licensed California mortgage broker.
+    base = `You are an expert mortgage advisor at ClearPath Mortgage, a licensed California mortgage broker.
 Answer clearly with concrete numbers. Never ask for SSN or full address. Be warm and helpful.`;
+  }
+  try {
+    if (existsSync(KNOWLEDGE_PATH)) {
+      const knowledge = readFileSync(KNOWLEDGE_PATH, 'utf-8');
+      if (knowledge.trim()) base += `\n\n== BROKER KNOWLEDGE BASE ==\n${knowledge}`;
+    }
+  } catch (e) {
+    console.warn('[Chat] Could not read knowledge.md');
+  }
+  return base;
 }
 
 const LANG_INSTRUCTION = `
