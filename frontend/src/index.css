@@ -88,6 +88,23 @@ p { color: var(--text-secondary); line-height: 1.7; }
 }
 .nav-cta:hover { background: var(--gold-light) !important; }
 
+/* Lang Toggle */
+.lang-toggle {
+  background: rgba(255,255,255,0.08);
+  color: var(--gold);
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 6px;
+  padding: 0.3rem 0.625rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+  font-family: inherit;
+  margin-left: 0.25rem;
+}
+.lang-toggle:hover { background: rgba(201,169,110,0.2); border-color: var(--gold); }
+
 /* Hamburger */
 .hamburger {
   display: none;

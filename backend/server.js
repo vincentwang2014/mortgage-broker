@@ -7,6 +7,7 @@ import newsRouter from './api/news.js';
 import chatRouter from './api/chat.js';
 import quoteRouter from './api/quote.js';
 import subscribeRouter from './api/subscribe.js';
+import adminRouter from './api/admin.js';
 import { sendWeeklyNewsletter } from './api/newsletter.js';
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/news', newsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/quote', quoteRouter);
 app.use('/api/subscribe', subscribeRouter);
+app.use('/api/admin', adminRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
