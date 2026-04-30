@@ -19,17 +19,21 @@ function loadSystemPrompt() {
 Answer clearly with concrete numbers. Never ask for SSN or full address. Be warm and helpful.`;
 }
 
-const LANG_INSTRUCTIONS = {
-  zh: '\n\n== LANGUAGE ==\nThe user has selected Chinese. Respond in Simplified Chinese (简体中文) for all replies. Use clear, professional financial language appropriate for Chinese-speaking homebuyers in the US.',
-  en: '\n\n== LANGUAGE ==\nRespond in English.',
-};
+const LANG_INSTRUCTION = `
+
+== LANGUAGE ==
+Detect the language of the user's most recent message and respond in that same language.
+- If the user writes in Chinese (any form), respond entirely in Simplified Chinese (简体中文).
+- If the user writes in English, respond in English.
+- If unclear, default to English.
+Use professional, clear financial language appropriate for homebuyers.`;
 
 router.post('/', async (req, res) => {
-  const { messages, lang = 'en' } = req.body;
+  const { messages } = req.body;
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages array required' });
   }
-  const systemPrompt = loadSystemPrompt() + (LANG_INSTRUCTIONS[lang] || LANG_INSTRUCTIONS.en);
+  const systemPrompt = loadSystemPrompt() + LANG_INSTRUCTION;
   try {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
