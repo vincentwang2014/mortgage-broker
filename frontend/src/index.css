@@ -149,6 +149,12 @@ p { color: var(--text-secondary); line-height: 1.7; }
   background: var(--navy-light);
   border-top: 1px solid rgba(37,99,235,0.15);
   padding: 0.75rem 1rem;
+  position: fixed;
+  top: 76px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 .mobile-menu.open { display: flex; flex-direction: column; gap: 0.25rem; }
 .mobile-link {
@@ -276,9 +282,8 @@ p { color: var(--text-secondary); line-height: 1.7; }
 .hero-grid {
   display: grid;
   gap: 2.5rem;
-  padding: 4.5rem 0 5rem;
+  padding: 4rem 0 4.5rem;
   align-items: center;
-  min-height: calc(100vh - 76px);
 }
 .hero-col-left {
   text-align: center;
@@ -296,6 +301,7 @@ p { color: var(--text-secondary); line-height: 1.7; }
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     padding: 5rem 0;
+    min-height: calc(100vh - 76px);
   }
   .hero-col-left {
     text-align: left;

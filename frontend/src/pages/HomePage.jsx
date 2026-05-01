@@ -136,22 +136,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Stats ── */}
-      <div className="stats-bar">
-        <div className="stat-item">
-          <div className="stat-number">{H.stat1}</div>
-          <div className="stat-label">{H.stat1Label}</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-number">{H.stat2}</div>
-          <div className="stat-label">{H.stat2Label}</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-number">{H.stat3}</div>
-          <div className="stat-label">{H.stat3Label}</div>
-        </div>
-      </div>
-
       {/* ── Services ── */}
       <section className="section">
         <div className="container">
