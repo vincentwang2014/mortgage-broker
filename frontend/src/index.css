@@ -73,36 +73,11 @@ p { color: var(--text-secondary); line-height: 1.7; }
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
   text-decoration: none;
 }
-.nav-brand-icon {
-  height: 32px;
-  width: auto;
-  flex-shrink: 0;
-}
-.nav-brand-wordmark {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-.nav-brand-num {
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-.nav-brand-text {
-  font-family: var(--font-body);
-  font-size: 0.62rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-top: 0.1rem;
-}
+.logo-nav  { height: 40px; width: auto; display: block; }
+.logo-footer { height: 34px; width: auto; display: block; opacity: 0.88; }
+.logo-hero { width: min(520px, 90vw); height: auto; display: block; }
 .nav-links {
   display: flex;
   align-items: center;
@@ -634,15 +609,9 @@ p { color: var(--text-secondary); line-height: 1.7; }
 .footer a { color: var(--gold); }
 .footer-wordmark {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 0.5rem;
   margin-bottom: 0.75rem;
-  opacity: 0.85;
 }
-.footer .nav-brand-icon { height: 22px; }
-.footer .nav-brand-num { font-size: 1rem; }
-.footer .nav-brand-text { font-size: 0.58rem; }
 
 /* ── Error / Empty States ── */
 .state-box {
@@ -669,7 +638,7 @@ p { color: var(--text-secondary); line-height: 1.7; }
   .section { padding: 2.5rem 0; }
   .hero-actions { flex-direction: column; align-items: center; }
   .btn-lg { width: 100%; justify-content: center; }
-  .nav-brand-num { font-size: 1.3rem; }
+  .logo-nav { height: 32px; }
 }
 
 /* ── Nav Scroll State ── */

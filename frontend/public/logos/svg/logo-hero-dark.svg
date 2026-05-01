@@ -1,0 +1,8 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="g" x1="0" y1="0" x2="560" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1D4ED8"/><stop offset="52%" stop-color="#2563EB"/><stop offset="100%" stop-color="#2EC4B6"/></linearGradient></defs><rect width="900" height="520" fill="#0F172A"/>
+<g transform="translate(170 64)">
+<rect x="0" y="0" width="130" height="166" rx="30" stroke="url(#g)" stroke-width="18"/><rect x="43" y="39" width="44" height="44" rx="9" fill="#1D4ED8"/><rect x="43" y="95" width="44" height="44" rx="9" fill="#1D4ED8"/>
+<rect x="215" y="0" width="130" height="166" rx="30" stroke="url(#g)" stroke-width="18"/><rect x="267" y="43" width="26" height="80" rx="11" fill="#2563EB"/>
+<rect x="430" y="0" width="130" height="166" rx="30" stroke="url(#g)" stroke-width="18"/><rect x="482" y="43" width="26" height="80" rx="11" fill="#2EC4B6"/></g>
+<text x="450" y="330" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="500" letter-spacing="8" fill="#FFFFFF">HOME LOAN</text>
+<text x="450" y="390" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="400" letter-spacing="2.2" fill="#94A3B8">Your Smartest Way Home</text></svg>

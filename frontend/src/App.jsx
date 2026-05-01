@@ -37,30 +37,7 @@ function Nav() {
       <nav className={`nav${scrolled ? ' nav-scrolled' : ''}`}>
         <div className="nav-inner">
           <Link to="/" className="nav-brand">
-            <svg className="nav-brand-icon" viewBox="0 0 480 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <defs>
-                <linearGradient id="navGrad" x1="0" y1="0" x2="480" y2="0" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#1D4ED8"/>
-                  <stop offset="52%" stopColor="#2563EB"/>
-                  <stop offset="100%" stopColor="#2EC4B6"/>
-                </linearGradient>
-              </defs>
-              <g stroke="url(#navGrad)" strokeWidth="36" fill="none">
-                <rect x="38" y="24" width="104" height="132" rx="24"/>
-                <rect x="188" y="24" width="104" height="132" rx="24"/>
-                <rect x="338" y="24" width="104" height="132" rx="24"/>
-              </g>
-              <g fill="url(#navGrad)">
-                <rect x="77" y="58" width="26" height="26" rx="6"/>
-                <rect x="77" y="96" width="26" height="26" rx="6"/>
-                <rect x="228" y="58" width="24" height="64" rx="12"/>
-                <rect x="378" y="58" width="24" height="64" rx="12"/>
-              </g>
-            </svg>
-            <span className="nav-brand-wordmark">
-              <span className="nav-brand-num">800</span>
-              <span className="nav-brand-text">Home Loan</span>
-            </span>
+            <img src="/logos/svg/logo-nav-dark.svg" alt="800 Home Loan" className="logo-nav" />
           </Link>
           <div className="nav-links">
             {links.map(l => (
@@ -134,30 +111,7 @@ export default function App() {
       </Routes>
       <footer className="footer">
         <div className="footer-wordmark">
-          <svg className="nav-brand-icon" viewBox="0 0 480 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <defs>
-              <linearGradient id="footerGrad" x1="0" y1="0" x2="480" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#1D4ED8"/>
-                <stop offset="52%" stopColor="#2563EB"/>
-                <stop offset="100%" stopColor="#2EC4B6"/>
-              </linearGradient>
-            </defs>
-            <g stroke="url(#footerGrad)" strokeWidth="36" fill="none">
-              <rect x="38" y="24" width="104" height="132" rx="24"/>
-              <rect x="188" y="24" width="104" height="132" rx="24"/>
-              <rect x="338" y="24" width="104" height="132" rx="24"/>
-            </g>
-            <g fill="url(#footerGrad)">
-              <rect x="77" y="58" width="26" height="26" rx="6"/>
-              <rect x="77" y="96" width="26" height="26" rx="6"/>
-              <rect x="228" y="58" width="24" height="64" rx="12"/>
-              <rect x="378" y="58" width="24" height="64" rx="12"/>
-            </g>
-          </svg>
-          <span className="nav-brand-wordmark">
-            <span className="nav-brand-num">800</span>
-            <span className="nav-brand-text">Home Loan</span>
-          </span>
+          <img src="/logos/svg/logo-nav-dark.svg" alt="800 Home Loan" className="logo-footer" />
         </div>
         <p style={{ marginTop: '0.5rem' }}>{T.footer}</p>
         <p style={{ marginTop: '0.25rem' }}>{T.footerSub}</p>
