@@ -82,10 +82,14 @@ export default function QuotePage() {
   }
 
   return (
-    <div className="quote-page">
-      <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', marginBottom: '0.375rem' }}>{Q.title}</h1>
-      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{Q.subtitle}</p>
-
+    <div className="page">
+      <div className="page-header">
+        <div className="container">
+          <h1>{Q.title}</h1>
+          <p>{Q.subtitle}</p>
+        </div>
+      </div>
+      <div className="quote-page">
       <div className="privacy-notice">
         <p>{Q.privacy}</p>
       </div>
@@ -272,6 +276,7 @@ export default function QuotePage() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

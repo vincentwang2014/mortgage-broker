@@ -74,6 +74,36 @@ function InlineCTA() {
   );
 }
 
+function NewsSkeleton() {
+  const rows = [
+    { tag: 56, src: 90, date: 60, h: '80%', l1: '95%', l2: '68%' },
+    { tag: 72, src: 75, date: 50, h: '65%', l1: '88%', l2: '55%' },
+    { tag: 60, src: 85, date: 65, h: '75%', l1: '92%', l2: '72%' },
+    { tag: 50, src: 95, date: 55, h: '70%', l1: '85%', l2: '60%' },
+    { tag: 64, src: 80, date: 58, h: '85%', l1: '90%', l2: '65%' },
+  ];
+  return (
+    <>
+      {rows.map((r, i) => (
+        <div key={i} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1.5rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'center' }}>
+            <span className="skeleton" style={{ width: r.tag, height: 20, borderRadius: 100 }} />
+            <span className="skeleton" style={{ width: r.src, height: 14 }} />
+            <span className="skeleton" style={{ width: r.date, height: 14 }} />
+          </div>
+          <span className="skeleton" style={{ width: r.h, height: 20, marginBottom: '0.5rem' }} />
+          <span className="skeleton" style={{ width: r.l1, height: 14, marginBottom: '0.375rem' }} />
+          <span className="skeleton" style={{ width: r.l2, height: 14, marginBottom: '1.25rem' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span className="skeleton" style={{ width: 80, height: 32, borderRadius: 8 }} />
+            <span className="skeleton" style={{ width: 70, height: 32, borderRadius: 8 }} />
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
+
 export default function NewsPage() {
   const { T } = useLang();
   const N = T.news;
@@ -98,12 +128,14 @@ export default function NewsPage() {
 
   return (
     <div className="page news-page">
-      <div className="container">
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', marginBottom: '0.375rem' }}>{N.title}</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{N.subtitle}</p>
+      <div className="page-header">
+        <div className="container">
+          <h1>{N.title}</h1>
+          <p>{N.subtitle}</p>
         </div>
+      </div>
 
+      <div className="container" style={{ paddingTop: '2rem', paddingBottom: '3rem' }}>
         <div className="category-filters">
           {CAT_KEYS.map(c => (
             <button key={c} className={`filter-btn${category === c ? ' active' : ''}`} onClick={() => setCategory(c)}>
@@ -112,12 +144,8 @@ export default function NewsPage() {
           ))}
         </div>
 
-        {loading && (
-          <div className="state-box">
-            <div className="spinner" style={{ margin: '0 auto 1rem' }} />
-            <p>{N.loading}</p>
-          </div>
-        )}
+        {loading && <NewsSkeleton />}
+
         {error && !loading && (
           <div className="state-box">
             <h3>{N.errorTitle}</h3>

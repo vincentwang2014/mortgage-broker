@@ -130,14 +130,28 @@ export default function PreQualPage() {
 
   if (submitted) {
     return (
-      <div style={{ maxWidth: '560px', margin: '5rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem', color: 'var(--gold)' }}>✓</div>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
-          {P.successTitle}
-        </h2>
-        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-          {P.successBody}
-        </p>
+      <div className="page">
+        <div className="page-header">
+          <div className="container">
+            <h1>{P.title}</h1>
+          </div>
+        </div>
+        <div style={{ maxWidth: '520px', margin: '4.5rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: '50%',
+            background: 'var(--gradient)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+            fontSize: '2rem', color: 'white', boxShadow: '0 8px 24px rgba(29,78,216,0.3)',
+          }}>✓</div>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
+            {P.successTitle}
+          </h2>
+          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '2rem' }}>
+            {P.successBody}
+          </p>
+          <a href="/" className="btn btn-gold btn-lg">Back to Home</a>
+        </div>
       </div>
     );
   }
@@ -145,12 +159,15 @@ export default function PreQualPage() {
   const inputSm = { padding: '0.45rem 0.625rem', fontSize: '0.82rem' };
 
   return (
+    <div className="page">
+      <div className="page-header">
+        <div className="container">
+          <h1>{P.title}</h1>
+          <p>{P.subtitle}</p>
+        </div>
+      </div>
     <div className="quote-page">
-      <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', marginBottom: '0.375rem' }}>
-        {P.title}
-      </h1>
-      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>{P.subtitle}</p>
-      <div className="privacy-notice">
+      <div className="privacy-notice" style={{ marginTop: 0 }}>
         <p>{P.disclaimer}</p>
       </div>
 
@@ -480,7 +497,7 @@ export default function PreQualPage() {
 
         {error && <p style={{ color: 'red', fontSize: '0.85rem', marginBottom: '1rem' }}>{error}</p>}
 
-        <button className="btn btn-primary btn-lg" style={{ width: '100%' }}
+        <button className="btn btn-gold btn-lg" style={{ width: '100%' }}
           disabled={loading || !form.firstName.trim() || !form.email.trim()}>
           {loading ? P.submitting : P.submit}
         </button>
@@ -488,6 +505,7 @@ export default function PreQualPage() {
           {P.disclaimer}
         </p>
       </form>
+    </div>
     </div>
   );
 }
