@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.jsx';
 import ChatPage from './pages/ChatPage.jsx';
 import NewsPage from './pages/NewsPage.jsx';
 import QuotePage from './pages/QuotePage.jsx';
+import CalcPage from './pages/CalcPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 
 export const LangContext = createContext({ lang: 'en', T: translations.en, setLang: () => {} });
@@ -17,6 +18,7 @@ function Nav() {
   const links = [
     { to: '/', label: T.nav.home, end: true },
     { to: '/news', label: T.nav.news },
+    { to: '/calc', label: T.nav.calc },
     { to: '/chat', label: T.nav.chat },
     { to: '/quote', label: T.nav.quote, cta: true },
   ];
@@ -92,6 +94,7 @@ export default function App() {
         <Route path="/news" element={<NewsPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/quote" element={<QuotePage />} />
+        <Route path="/calc" element={<CalcPage />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <footer className="footer">
