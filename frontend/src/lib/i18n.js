@@ -1,7 +1,9 @@
+import siteConfig from './siteConfig.js';
+
 export const translations = {
   en: {
     nav: {
-      brand: 'ClearPath Mortgage',
+      brand: siteConfig.brandEn,
       home: 'Home',
       news: 'Market News',
       calc: 'Calculator',
@@ -126,13 +128,13 @@ export const translations = {
       terms: ['30-Year Fixed', '20-Year Fixed', '15-Year Fixed', '10-Year Fixed'],
       noCalc: 'Enter purchase price and down payment to calculate.',
     },
-    footer: 'ClearPath Mortgage — Licensed California Mortgage Broker — NMLS #______',
+    footer: `${siteConfig.brandEn} — ${siteConfig.taglineEn} — NMLS ${siteConfig.nmls}`,
     footerSub: 'Not a commitment to lend. Equal Housing Lender.',
   },
 
   zh: {
     nav: {
-      brand: '清路贷款',
+      brand: siteConfig.brandZh,
       home: '首页',
       news: '市场资讯',
       calc: '房贷计算器',
@@ -257,7 +259,7 @@ export const translations = {
       terms: ['30年固定', '20年固定', '15年固定', '10年固定'],
       noCalc: '请输入房产价格和首付金额以开始计算。',
     },
-    footer: '清路贷款 — 加州持牌贷款经纪 — NMLS #______',
+    footer: `${siteConfig.brandZh} — ${siteConfig.taglineZh} — NMLS ${siteConfig.nmls}`,
     footerSub: '不构成贷款承诺。平等住房贷款机构。',
   },
 };

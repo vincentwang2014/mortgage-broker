@@ -526,6 +526,41 @@ p { color: var(--text-secondary); line-height: 1.7; }
   margin-top: -0.25rem;
 }
 
+/* ── Calculator ── */
+.calc-inputs { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+.calc-pair   { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+.calc-compare { display: grid; gap: 0.5rem; grid-template-columns: auto 1fr 1fr; align-items: center; }
+.calc-compare-cell { padding: 0.5rem; font-size: 0.88rem; }
+.input-prefix { position: relative; }
+.input-prefix .pfx { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem; pointer-events: none; }
+.input-prefix .sfx { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem; pointer-events: none; }
+.input-prefix input { padding-left: 1.5rem; }
+.input-prefix.has-sfx input { padding-right: 2rem; }
+.term-btns { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+.term-btn { padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500; border: 1.5px solid var(--border); background: var(--white); color: var(--text-secondary); cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+.term-btn.active { border-color: var(--navy); background: var(--navy); color: var(--white); }
+.amort-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.amort-table th { padding: 0.5rem 0.75rem; text-align: right; color: var(--text-muted); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+.amort-table td { padding: 0.5rem 0.75rem; text-align: right; border-bottom: 1px solid var(--cream-dark); }
+.amort-bar { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+.amort-bar-track { width: 52px; height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.amort-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; }
+@media (min-width: 540px) {
+  .calc-inputs { grid-template-columns: 1fr 1fr; }
+  .calc-pair   { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── Hero Enhancement ── */
+.hero { position: relative; overflow: hidden; }
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(201,169,110,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero .container { position: relative; }
+
 /* ── Footer ── */
 .footer {
   background: var(--navy);
