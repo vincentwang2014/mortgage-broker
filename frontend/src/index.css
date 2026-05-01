@@ -77,7 +77,7 @@ p { color: var(--text-secondary); line-height: 1.7; }
   text-decoration: none;
 }
 .nav-brand-icon {
-  height: 26px;
+  height: 32px;
   width: auto;
   flex-shrink: 0;
 }

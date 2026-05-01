@@ -45,16 +45,16 @@ function Nav() {
                   <stop offset="100%" stopColor="#2EC4B6"/>
                 </linearGradient>
               </defs>
-              <g stroke="url(#navGrad)" strokeWidth="16" fill="none">
+              <g stroke="url(#navGrad)" strokeWidth="36" fill="none">
                 <rect x="38" y="24" width="104" height="132" rx="24"/>
                 <rect x="188" y="24" width="104" height="132" rx="24"/>
                 <rect x="338" y="24" width="104" height="132" rx="24"/>
               </g>
               <g fill="url(#navGrad)">
-                <rect x="72" y="54" width="36" height="36" rx="8"/>
-                <rect x="72" y="100" width="36" height="36" rx="8"/>
-                <rect x="227" y="47" width="26" height="86" rx="10"/>
-                <rect x="377" y="47" width="26" height="86" rx="10"/>
+                <rect x="77" y="58" width="26" height="26" rx="6"/>
+                <rect x="77" y="96" width="26" height="26" rx="6"/>
+                <rect x="228" y="58" width="24" height="64" rx="12"/>
+                <rect x="378" y="58" width="24" height="64" rx="12"/>
               </g>
             </svg>
             <span className="nav-brand-wordmark">
@@ -142,16 +142,16 @@ export default function App() {
                 <stop offset="100%" stopColor="#2EC4B6"/>
               </linearGradient>
             </defs>
-            <g stroke="url(#footerGrad)" strokeWidth="16" fill="none">
+            <g stroke="url(#footerGrad)" strokeWidth="36" fill="none">
               <rect x="38" y="24" width="104" height="132" rx="24"/>
               <rect x="188" y="24" width="104" height="132" rx="24"/>
               <rect x="338" y="24" width="104" height="132" rx="24"/>
             </g>
             <g fill="url(#footerGrad)">
-              <rect x="72" y="54" width="36" height="36" rx="8"/>
-              <rect x="72" y="100" width="36" height="36" rx="8"/>
-              <rect x="227" y="47" width="26" height="86" rx="10"/>
-              <rect x="377" y="47" width="26" height="86" rx="10"/>
+              <rect x="77" y="58" width="26" height="26" rx="6"/>
+              <rect x="77" y="96" width="26" height="26" rx="6"/>
+              <rect x="228" y="58" width="24" height="64" rx="12"/>
+              <rect x="378" y="58" width="24" height="64" rx="12"/>
             </g>
           </svg>
           <span className="nav-brand-wordmark">
