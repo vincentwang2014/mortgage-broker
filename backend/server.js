@@ -92,6 +92,13 @@ cron.schedule('0 15 * * 2', async () => {
 
 app.listen(PORT, () => {
   console.log(`ClearPath API running on port ${PORT}`);
+  // Pre-warm news cache in background so first visitor gets a fast response
+  import('./api/news.js').then(({ refreshNewsCache }) => {
+    console.log('[STARTUP] Pre-warming news cache...');
+    refreshNewsCache()
+      .then(() => console.log('[STARTUP] News cache ready'))
+      .catch(e => console.warn('[STARTUP] News pre-warm failed:', e.message));
+  });
 });
 
 export default app;

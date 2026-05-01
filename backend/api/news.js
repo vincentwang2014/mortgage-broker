@@ -1,15 +1,15 @@
 import express from 'express';
 import Parser from 'rss-parser';
 import Anthropic from '@anthropic-ai/sdk';
-import { kv } from '@vercel/kv';
 import { createDoc, pruneDocsByType } from '../lib/rag.js';
 
 const router = express.Router();
 const parser = new Parser({ timeout: 8000, headers: { 'User-Agent': 'ClearPathMortgage/1.0' } });
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const CACHE_KEY = 'news:articles';
-const CACHE_TTL = 6 * 60 * 60;
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
+let _cache = null;
+let _cacheAt = 0;
 
 const RSS_SOURCES = [
   { url: 'https://www.housingwire.com/feed/', name: 'HousingWire', category: 'market' },
@@ -85,11 +85,8 @@ export async function refreshNewsCache() {
   });
   const sorted = unique.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).slice(0, 12);
   const summarized = await summarizeArticles(sorted);
-  try {
-    await kv.set(CACHE_KEY, JSON.stringify(summarized), { ex: CACHE_TTL });
-  } catch (e) {
-    console.warn('[KV] Cache write failed (local dev ok):', e.message);
-  }
+  _cache = summarized;
+  _cacheAt = Date.now();
   try {
     pruneDocsByType('news');
     for (const article of summarized) {
@@ -107,18 +104,13 @@ export async function refreshNewsCache() {
 
 router.get('/', async (req, res) => {
   try {
-    let articles = null;
-    try {
-      const cached = await kv.get(CACHE_KEY);
-      if (cached) articles = typeof cached === 'string' ? JSON.parse(cached) : cached;
-    } catch { /* KV not available locally */ }
-
-    if (!articles) articles = await refreshNewsCache();
-
+    if (!_cache || Date.now() - _cacheAt > CACHE_TTL_MS) {
+      await refreshNewsCache();
+    }
+    let articles = _cache || [];
     const { category } = req.query;
     if (category && category !== 'all') articles = articles.filter(a => a.category === category);
-
-    res.json({ articles, cached: true, updatedAt: new Date().toISOString() });
+    res.json({ articles, cached: _cacheAt > 0, updatedAt: new Date(_cacheAt).toISOString() });
   } catch (e) {
     console.error('[News API]', e);
     res.status(500).json({ error: 'Failed to fetch news', articles: [] });
