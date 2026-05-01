@@ -1,35 +1,115 @@
 import React, { useState } from 'react';
 import { useLang } from '../App.jsx';
 
-const ALL_STATES = [
-  'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN',
-  'IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH',
-  'NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT',
-  'VT','VA','WA','WV','WI','WY',
-];
+function emptyProp() {
+  return { address: '', isPrimary: '', mortgage: '', rental: '', insurance: '', tax: '', hoa: '' };
+}
+
+function YesNo({ value, onChange, labels }) {
+  return (
+    <div style={{ display: 'flex', gap: '0.5rem' }}>
+      {[labels.yes, labels.no].map(opt => (
+        <label key={opt} style={{
+          display: 'flex', alignItems: 'center', gap: '0.35rem',
+          padding: '0.35rem 0.75rem', borderRadius: '100px', cursor: 'pointer',
+          fontSize: '0.85rem', fontWeight: value === opt ? 600 : 400,
+          border: `1.5px solid ${value === opt ? 'var(--navy)' : 'var(--border)'}`,
+          background: value === opt ? 'rgba(10,22,40,0.06)' : 'transparent',
+          transition: 'all 0.15s',
+        }}>
+          <input type="radio" value={opt} checked={value === opt} onChange={() => onChange(opt)}
+            style={{ display: 'none' }} />
+          {opt}
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function PillGroup({ options, value, onChange }) {
+  return (
+    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+      {options.map(opt => (
+        <label key={opt} style={{
+          display: 'flex', alignItems: 'center', gap: '0.35rem',
+          padding: '0.4rem 0.85rem', borderRadius: '100px', cursor: 'pointer',
+          fontSize: '0.82rem', fontWeight: value === opt ? 600 : 400,
+          border: `1.5px solid ${value === opt ? 'var(--navy)' : 'var(--border)'}`,
+          background: value === opt ? 'rgba(10,22,40,0.06)' : 'transparent',
+          transition: 'all 0.15s',
+        }}>
+          <input type="radio" value={opt} checked={value === opt} onChange={() => onChange(opt)}
+            style={{ display: 'none' }} />
+          {opt}
+        </label>
+      ))}
+    </div>
+  );
+}
 
 export default function PreQualPage() {
   const { T } = useLang();
   const P = T.prequal;
 
+  const isPurchaseOpt = opt => opt === P.purposeOpts[0];
+
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', contactPref: P.contactOpts[0], bestTime: '',
-    purpose: P.purposeOpts[0], timeline: P.timelineOpts[2],
-    incomeType: P.incomeOpts[0], annualIncome: '', monthlyDebts: '', creditRange: P.creditOpts[0],
-    // purchase
-    purchasePrice: '', downPayment: '', state: 'CA', loanPref: P.loanPrefOpts[0],
-    // refi
-    currentBalance: '', homeValue: '', currentRate: '', refiGoal: P.refiGoalOpts[0], yearsOwned: '',
+    // Purpose
+    purpose: P.purposeOpts[0],
+    timeline: P.timelineOpts[2],
+    // Borrower
+    firstName: '', lastName: '', phone: '', email: '',
+    contactPref: P.contactOpts[0], bestTime: '',
+    // Co-Borrower
+    hasCoborr: false,
+    cobFirstName: '', cobLastName: '', cobPhone: '', cobEmail: '',
+    // Purchase
+    purchasePrice: '', propType: P.propTypeOpts[0], downPayment: '',
+    creditScore: '',
+    // Refi
+    currentBalance: '', homeValue: '', currentRate: '', refiGoal: P.refiGoalOpts[0],
+    // Employment
+    annualSalary: '', annualBonus: '',
+    jobYears: '', jobMonths: '',
+    selfEmployed: '',
+    usYears: '', usMonths: '',
+    residency: P.residencyOpts[0],
+    // Properties
+    propCount: '0',
+    properties: [],
+    // Debts
+    carLoan: '', carLoanAmt: '',
+    studentLoan: '', studentLoanAmt: '',
+    otherDebts: '',
+    // Notes
     notes: '',
   });
+
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const isPurchase = form.purpose === P.purposeOpts[0];
+  const isPurchase = isPurchaseOpt(form.purpose);
 
   function set(field) {
     return e => setForm(prev => ({ ...prev, [field]: e.target.value }));
+  }
+  function setVal(field, val) {
+    setForm(prev => ({ ...prev, [field]: val }));
+  }
+
+  function addProp() {
+    setForm(prev => ({ ...prev, properties: [...prev.properties, emptyProp()] }));
+  }
+  function removeProp(i) {
+    setForm(prev => ({ ...prev, properties: prev.properties.filter((_, idx) => idx !== i) }));
+  }
+  function setProp(i, field, val) {
+    setForm(prev => {
+      const props = [...prev.properties];
+      props[i] = { ...props[i], [field]: val };
+      return { ...prev, properties: props };
+    });
   }
 
   async function handleSubmit(e) {
@@ -51,7 +131,7 @@ export default function PreQualPage() {
   if (submitted) {
     return (
       <div style={{ maxWidth: '560px', margin: '5rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
+        <div style={{ fontSize: '3rem', marginBottom: '1rem', color: 'var(--gold)' }}>✓</div>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', marginBottom: '0.75rem' }}>
           {P.successTitle}
         </h2>
@@ -62,147 +142,117 @@ export default function PreQualPage() {
     );
   }
 
+  const inputSm = { padding: '0.45rem 0.625rem', fontSize: '0.82rem' };
+
   return (
     <div className="quote-page">
-      <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', marginBottom: '0.375rem' }}>
+      <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', marginBottom: '0.375rem' }}>
         {P.title}
       </h1>
-      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{P.subtitle}</p>
-
-      <div className="privacy-notice" style={{ borderLeft: '3px solid var(--gold)', paddingLeft: '1rem' }}>
+      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>{P.subtitle}</p>
+      <div className="privacy-notice">
         <p>{P.disclaimer}</p>
       </div>
 
       <form onSubmit={handleSubmit}>
 
-        {/* ── Section 1: Contact ── */}
+        {/* ── 1. Purpose & Timeline ── */}
         <div className="form-section">
           <div className="form-section-title">{P.sec1}</div>
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label">{P.purpose}</label>
+            <PillGroup options={P.purposeOpts} value={form.purpose} onChange={v => setVal('purpose', v)} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">{P.timeline}</label>
+            <PillGroup options={P.timelineOpts} value={form.timeline} onChange={v => setVal('timeline', v)} />
+          </div>
+        </div>
+
+        {/* ── 2. Borrower / Co-Borrower ── */}
+        <div className="form-section">
+          <div className="form-section-title">{P.sec2}</div>
+
+          {/* Borrower */}
+          <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{P.borrower}</p>
           <div className="form-row form-row-2">
             <div className="form-group">
-              <label className="form-label">{P.name} *</label>
-              <input className="form-input" value={form.name} onChange={set('name')} placeholder={P.namePH} required />
+              <label className="form-label">{P.firstName} *</label>
+              <input className="form-input" value={form.firstName} onChange={set('firstName')} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">{P.lastName} *</label>
+              <input className="form-input" value={form.lastName} onChange={set('lastName')} required />
+            </div>
+          </div>
+          <div className="form-row form-row-2" style={{ marginTop: '0.75rem' }}>
+            <div className="form-group">
+              <label className="form-label">{P.phone}</label>
+              <input className="form-input" value={form.phone} onChange={set('phone')} placeholder={P.phonePH} />
             </div>
             <div className="form-group">
               <label className="form-label">{P.email} *</label>
               <input className="form-input" type="email" value={form.email} onChange={set('email')} placeholder={P.emailPH} required />
             </div>
           </div>
-          <div className="form-row form-row-2" style={{ marginTop: '1rem' }}>
-            <div className="form-group">
-              <label className="form-label">{P.phone}</label>
-              <input className="form-input" value={form.phone} onChange={set('phone')} placeholder={P.phonePH} />
-            </div>
+          <div className="form-row form-row-2" style={{ marginTop: '0.75rem' }}>
             <div className="form-group">
               <label className="form-label">{P.contactPref}</label>
               <select className="form-select" value={form.contactPref} onChange={set('contactPref')}>
                 {P.contactOpts.map(o => <option key={o}>{o}</option>)}
               </select>
             </div>
+            <div className="form-group">
+              <label className="form-label">{P.bestTime}</label>
+              <input className="form-input" value={form.bestTime} onChange={set('bestTime')} placeholder={P.bestTimePH} />
+            </div>
           </div>
-          <div className="form-group" style={{ marginTop: '1rem' }}>
-            <label className="form-label">{P.bestTime}</label>
-            <input className="form-input" value={form.bestTime} onChange={set('bestTime')} placeholder={P.bestTimePH} />
+
+          {/* Co-Borrower toggle */}
+          <div style={{ marginTop: '1.25rem' }}>
+            {!form.hasCoborr ? (
+              <button type="button" className="btn btn-outline btn-sm"
+                onClick={() => setVal('hasCoborr', true)}>
+                {P.addCoborrower}
+              </button>
+            ) : (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>{P.coborrower}</p>
+                  <button type="button" className="btn btn-outline btn-sm"
+                    style={{ fontSize: '0.75rem', color: '#dc2626', borderColor: '#dc2626' }}
+                    onClick={() => setVal('hasCoborr', false)}>
+                    {P.removeCoborrower}
+                  </button>
+                </div>
+                <div className="form-row form-row-2">
+                  <div className="form-group">
+                    <label className="form-label">{P.firstName}</label>
+                    <input className="form-input" value={form.cobFirstName} onChange={set('cobFirstName')} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">{P.lastName}</label>
+                    <input className="form-input" value={form.cobLastName} onChange={set('cobLastName')} />
+                  </div>
+                </div>
+                <div className="form-row form-row-2" style={{ marginTop: '0.75rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">{P.phone}</label>
+                    <input className="form-input" value={form.cobPhone} onChange={set('cobPhone')} placeholder={P.phonePH} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">{P.email}</label>
+                    <input className="form-input" type="email" value={form.cobEmail} onChange={set('cobEmail')} placeholder={P.emailPH} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ── Section 2: Purpose & Timeline ── */}
-        <div className="form-section">
-          <div className="form-section-title">{P.sec2}</div>
-          <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label className="form-label">{P.purpose}</label>
-            <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
-              {P.purposeOpts.map(opt => (
-                <label
-                  key={opt}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.4rem',
-                    padding: '0.45rem 0.875rem', borderRadius: '100px', cursor: 'pointer',
-                    fontSize: '0.85rem', fontWeight: form.purpose === opt ? 600 : 400,
-                    border: `1.5px solid ${form.purpose === opt ? 'var(--navy)' : 'var(--border)'}`,
-                    background: form.purpose === opt ? 'rgba(10,22,40,0.06)' : 'transparent',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  <input type="radio" name="purpose" value={opt} checked={form.purpose === opt}
-                    onChange={set('purpose')} style={{ display: 'none' }} />
-                  {opt}
-                </label>
-              ))}
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="form-label">{P.timeline}</label>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {P.timelineOpts.map(opt => (
-                <label
-                  key={opt}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.4rem',
-                    padding: '0.4rem 0.75rem', borderRadius: '100px', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: form.timeline === opt ? 600 : 400,
-                    border: `1.5px solid ${form.timeline === opt ? 'var(--navy)' : 'var(--border)'}`,
-                    background: form.timeline === opt ? 'rgba(10,22,40,0.06)' : 'transparent',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  <input type="radio" name="timeline" value={opt} checked={form.timeline === opt}
-                    onChange={set('timeline')} style={{ display: 'none' }} />
-                  {opt}
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Section 3: Financial Profile ── */}
+        {/* ── 3. Purchase / Refi Details ── */}
         <div className="form-section">
           <div className="form-section-title">{P.sec3}</div>
-          <div className="form-row form-row-2">
-            <div className="form-group">
-              <label className="form-label">{P.incomeType}</label>
-              <select className="form-select" value={form.incomeType} onChange={set('incomeType')}>
-                {P.incomeOpts.map(o => <option key={o}>{o}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">{P.annualIncome}</label>
-              <input className="form-input" value={form.annualIncome} onChange={set('annualIncome')} placeholder={P.annualIncomePH} />
-            </div>
-          </div>
-          <div className="form-group" style={{ marginTop: '1rem' }}>
-            <label className="form-label">{P.monthlyDebts}</label>
-            <input className="form-input" value={form.monthlyDebts} onChange={set('monthlyDebts')} placeholder={P.monthlyDebtsPH} />
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>{P.monthlyDebtsHint}</p>
-          </div>
-          <div className="form-group" style={{ marginTop: '1rem' }}>
-            <label className="form-label">{P.creditRange}</label>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {P.creditOpts.map(opt => (
-                <label
-                  key={opt}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.4rem',
-                    padding: '0.4rem 0.75rem', borderRadius: '100px', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: form.creditRange === opt ? 600 : 400,
-                    border: `1.5px solid ${form.creditRange === opt ? 'var(--navy)' : 'var(--border)'}`,
-                    background: form.creditRange === opt ? 'rgba(10,22,40,0.06)' : 'transparent',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  <input type="radio" name="creditRange" value={opt} checked={form.creditRange === opt}
-                    onChange={set('creditRange')} style={{ display: 'none' }} />
-                  {opt}
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Section 4: Property Details ── */}
-        <div className="form-section">
-          <div className="form-section-title">{P.sec4}</div>
-
           {isPurchase ? (
             <>
               <div className="form-row form-row-2">
@@ -211,22 +261,22 @@ export default function PreQualPage() {
                   <input className="form-input" value={form.purchasePrice} onChange={set('purchasePrice')} placeholder={P.purchasePricePH} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">{P.downPayment}</label>
-                  <input className="form-input" value={form.downPayment} onChange={set('downPayment')} placeholder={P.downPaymentPH} />
+                  <label className="form-label">{P.propType}</label>
+                  <select className="form-select" value={form.propType} onChange={set('propType')}>
+                    {P.propTypeOpts.map(o => <option key={o}>{o}</option>)}
+                  </select>
                 </div>
               </div>
-              <div className="form-row form-row-2" style={{ marginTop: '1rem' }}>
+              <div className="form-row form-row-2" style={{ marginTop: '0.75rem' }}>
                 <div className="form-group">
-                  <label className="form-label">{P.state}</label>
-                  <select className="form-select" value={form.state} onChange={set('state')}>
-                    {ALL_STATES.map(s => <option key={s}>{s}</option>)}
-                  </select>
+                  <label className="form-label">{P.downPayment}</label>
+                  <input className="form-input" value={form.downPayment} onChange={set('downPayment')} placeholder={P.downPaymentPH} />
+                  <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{P.downPaymentHint}</p>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">{P.loanPref}</label>
-                  <select className="form-select" value={form.loanPref} onChange={set('loanPref')}>
-                    {P.loanPrefOpts.map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <label className="form-label">{P.creditScore}</label>
+                  <input className="form-input" value={form.creditScore} onChange={set('creditScore')} placeholder={P.creditScorePH} />
+                  <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{P.creditUnknown}</p>
                 </div>
               </div>
             </>
@@ -242,17 +292,17 @@ export default function PreQualPage() {
                   <input className="form-input" value={form.homeValue} onChange={set('homeValue')} placeholder={P.homeValuePH} />
                 </div>
               </div>
-              <div className="form-row form-row-2" style={{ marginTop: '1rem' }}>
+              <div className="form-row form-row-2" style={{ marginTop: '0.75rem' }}>
                 <div className="form-group">
                   <label className="form-label">{P.currentRate}</label>
                   <input className="form-input" value={form.currentRate} onChange={set('currentRate')} placeholder={P.currentRatePH} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">{P.yearsOwned}</label>
-                  <input className="form-input" value={form.yearsOwned} onChange={set('yearsOwned')} placeholder={P.yearsOwnedPH} />
+                  <label className="form-label">{P.creditScore}</label>
+                  <input className="form-input" value={form.creditScore} onChange={set('creditScore')} placeholder={P.creditScorePH} />
                 </div>
               </div>
-              <div className="form-group" style={{ marginTop: '1rem' }}>
+              <div className="form-group" style={{ marginTop: '0.75rem' }}>
                 <label className="form-label">{P.refiGoal}</label>
                 <select className="form-select" value={form.refiGoal} onChange={set('refiGoal')}>
                   {P.refiGoalOpts.map(o => <option key={o}>{o}</option>)}
@@ -262,31 +312,179 @@ export default function PreQualPage() {
           )}
         </div>
 
-        {/* ── Section 5: Notes ── */}
+        {/* ── 4. Employment & Income ── */}
+        <div className="form-section">
+          <div className="form-section-title">{P.sec4}</div>
+          <div className="form-row form-row-2">
+            <div className="form-group">
+              <label className="form-label">{P.annualSalary}</label>
+              <input className="form-input" value={form.annualSalary} onChange={set('annualSalary')} placeholder={P.annualSalaryPH} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">{P.annualBonus}</label>
+              <input className="form-input" value={form.annualBonus} onChange={set('annualBonus')} placeholder={P.annualBonusPH} />
+            </div>
+          </div>
+
+          {/* Job tenure */}
+          <div className="form-group" style={{ marginTop: '0.75rem' }}>
+            <label className="form-label">{P.jobTenure}</label>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <input className="form-input" style={{ width: '80px' }} value={form.jobYears} onChange={set('jobYears')} placeholder={P.jobYearsPH} />
+              <input className="form-input" style={{ width: '80px' }} value={form.jobMonths} onChange={set('jobMonths')} placeholder={P.jobMonthsPH} />
+            </div>
+          </div>
+
+          {/* Self-employed */}
+          <div className="form-group" style={{ marginTop: '0.75rem' }}>
+            <label className="form-label" style={{ marginBottom: '0.375rem', display: 'block' }}>{P.selfEmployed}</label>
+            <YesNo value={form.selfEmployed} onChange={v => setVal('selfEmployed', v)} labels={P} />
+            {form.selfEmployed === P.yes && (
+              <p style={{ fontSize: '0.75rem', color: 'var(--gold)', marginTop: '0.375rem' }}>{P.selfEmployedHint}</p>
+            )}
+          </div>
+
+          {/* Time in US + Residency */}
+          <div className="form-row form-row-2" style={{ marginTop: '0.75rem' }}>
+            <div className="form-group">
+              <label className="form-label">{P.usTime}</label>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <input className="form-input" style={{ width: '80px' }} value={form.usYears} onChange={set('usYears')} placeholder={P.jobYearsPH} />
+                <input className="form-input" style={{ width: '80px' }} value={form.usMonths} onChange={set('usMonths')} placeholder={P.jobMonthsPH} />
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">{P.residency}</label>
+              <select className="form-select" value={form.residency} onChange={set('residency')}>
+                {P.residencyOpts.map(o => <option key={o}>{o}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 5. Existing Properties ── */}
         <div className="form-section">
           <div className="form-section-title">{P.sec5}</div>
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label">{P.propCount}</label>
+            <input className="form-input" style={{ width: '80px' }} value={form.propCount}
+              onChange={set('propCount')} placeholder={P.propCountPH} />
+          </div>
+
+          {form.properties.length > 0 && (
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>{P.propTableHint}</p>
+          )}
+
+          {form.properties.map((prop, i) => (
+            <div key={i} className="card" style={{ padding: '1rem', marginBottom: '0.75rem', background: 'var(--cream)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--navy)' }}>Property {i + 1}</span>
+                <button type="button" className="btn btn-outline btn-sm"
+                  style={{ fontSize: '0.72rem', color: '#dc2626', borderColor: '#dc2626' }}
+                  onClick={() => removeProp(i)}>{P.removeProp}</button>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '0.625rem' }}>
+                <label className="form-label" style={{ fontSize: '0.75rem' }}>{P.propAddress}</label>
+                <input className="form-input" style={inputSm} value={prop.address}
+                  onChange={e => setProp(i, 'address', e.target.value)}
+                  placeholder="123 Main St, City, State" />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.5rem' }}>
+                {[
+                  { field: 'isPrimary', label: P.propPrimary, ph: 'Y / N' },
+                  { field: 'mortgage',  label: P.propMortgage,  ph: '$2,500' },
+                  { field: 'rental',    label: P.propRental,    ph: '$0' },
+                  { field: 'insurance', label: P.propInsurance, ph: '$150' },
+                  { field: 'tax',       label: P.propTax,       ph: '$400' },
+                  { field: 'hoa',       label: P.propHOA,       ph: '$0' },
+                ].map(({ field, label, ph }) => (
+                  <div className="form-group" key={field}>
+                    <label className="form-label" style={{ fontSize: '0.72rem' }}>{label}</label>
+                    <input className="form-input" style={inputSm} value={prop[field]}
+                      onChange={e => setProp(i, field, e.target.value)} placeholder={ph} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <button type="button" className="btn btn-outline btn-sm" onClick={addProp}>
+            {P.addProp}
+          </button>
+          {form.properties.some(p => p.rental) && (
+            <p style={{ fontSize: '0.75rem', color: 'var(--gold)', marginTop: '0.5rem' }}>{P.propRentalHint}</p>
+          )}
+        </div>
+
+        {/* ── 6. Monthly Debts ── */}
+        <div className="form-section">
+          <div className="form-section-title">{P.sec6}</div>
+
+          {/* Car loan */}
+          <div className="form-group" style={{ marginBottom: '0.875rem' }}>
+            <label className="form-label" style={{ marginBottom: '0.375rem', display: 'block' }}>{P.carLoan}</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <YesNo value={form.carLoan} onChange={v => setVal('carLoan', v)} labels={P} />
+              {form.carLoan === P.yes && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{P.carLoanAmt}:</span>
+                  <input className="form-input" style={{ width: '110px', ...inputSm }}
+                    value={form.carLoanAmt} onChange={set('carLoanAmt')} placeholder={P.carLoanPH} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Student loan */}
+          <div className="form-group" style={{ marginBottom: '0.875rem' }}>
+            <label className="form-label" style={{ marginBottom: '0.375rem', display: 'block' }}>{P.studentLoan}</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <YesNo value={form.studentLoan} onChange={v => setVal('studentLoan', v)} labels={P} />
+              {form.studentLoan === P.yes && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{P.studentLoanAmt}:</span>
+                  <input className="form-input" style={{ width: '110px', ...inputSm }}
+                    value={form.studentLoanAmt} onChange={set('studentLoanAmt')} placeholder={P.studentLoanPH} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Other debts */}
           <div className="form-group">
-            <textarea
-              className="form-textarea"
-              value={form.notes}
-              onChange={set('notes')}
-              placeholder={P.notesPH}
-              style={{ minHeight: '120px', resize: 'vertical' }}
-            />
+            <label className="form-label">{P.otherDebts}</label>
+            <input className="form-input" value={form.otherDebts} onChange={set('otherDebts')} placeholder={P.otherDebtsPH} />
+          </div>
+        </div>
+
+        {/* ── Documents reminder ── */}
+        <div className="form-section" style={{ background: 'var(--cream)', border: '1px solid var(--border)' }}>
+          <div className="form-section-title" style={{ color: 'var(--gold)' }}>{P.docsTitle}</div>
+          <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+            {P.docs.map((d, i) => (
+              <li key={i} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{d}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ── 7. Notes ── */}
+        <div className="form-section">
+          <div className="form-section-title">{P.sec7}</div>
+          <div className="form-group">
+            <textarea className="form-textarea" value={form.notes} onChange={set('notes')}
+              placeholder={P.notesPH} style={{ minHeight: '100px', resize: 'vertical' }} />
           </div>
         </div>
 
         {error && <p style={{ color: 'red', fontSize: '0.85rem', marginBottom: '1rem' }}>{error}</p>}
 
-        <button
-          className="btn btn-primary btn-lg"
-          style={{ width: '100%' }}
-          disabled={loading || !form.name.trim() || !form.email.trim()}
-        >
+        <button className="btn btn-primary btn-lg" style={{ width: '100%' }}
+          disabled={loading || !form.firstName.trim() || !form.email.trim()}>
           {loading ? P.submitting : P.submit}
         </button>
-
-        <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.75rem', lineHeight: 1.5 }}>
+        <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.75rem' }}>
           {P.disclaimer}
         </p>
       </form>
