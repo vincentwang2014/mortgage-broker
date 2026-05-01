@@ -83,7 +83,11 @@ export default function HomePage() {
       <section className="hero">
         <div className="container">
           <div className="hero-badge">{H.heroBadge}</div>
-          <h1>{H.heroTitle1}<span>{H.heroHighlight}</span>{H.heroTitle2}</h1>
+          <img
+            src="/logos/svg/logo-hero-dark.svg"
+            alt="800 Home Loan"
+            className="logo-hero"
+          />
           <p>{H.heroSub}</p>
           <div className="hero-actions">
             <Link to="/quote" className="btn btn-gold btn-lg">{H.ctaQuote}</Link>

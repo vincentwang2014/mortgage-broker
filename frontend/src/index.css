@@ -77,7 +77,12 @@ p { color: var(--text-secondary); line-height: 1.7; }
 }
 .logo-nav  { height: 40px; width: auto; display: block; }
 .logo-footer { height: 34px; width: auto; display: block; opacity: 0.88; }
-.logo-hero { width: min(520px, 90vw); height: auto; display: block; }
+.logo-hero {
+  width: min(480px, 88vw);
+  height: auto;
+  display: block;
+  margin: 0 auto 1.75rem;
+}
 .nav-links {
   display: flex;
   align-items: center;
@@ -263,12 +268,7 @@ p { color: var(--text-secondary); line-height: 1.7; }
   text-align: center;
 }
 .hero h1 { color: var(--white); margin-bottom: 0.5rem; }
-.hero h1 span {
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+.hero h1 span { background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .hero p { color: rgba(255,255,255,0.68); max-width: 580px; margin: 1rem auto 2.25rem; font-size: 1.1rem; line-height: 1.65; }
 .hero-actions { display: flex; gap: 0.875rem; justify-content: center; flex-wrap: wrap; }
 
