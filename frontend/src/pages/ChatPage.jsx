@@ -9,32 +9,97 @@ export default function ChatPage() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [agents, setAgents] = useState([]);
+  const [selectedAgentId, setSelectedAgentId] = useState(null);
   const bottomRef = useRef(null);
 
-  // Reset greeting when language changes
   useEffect(() => {
     setMessages([{ role: 'assistant', content: C.greeting }]);
   }, [lang]);
 
   useEffect(() => {
+    fetch('/api/agents')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setAgents(data);
+          const def = data.find(a => a.isDefault) || data[0];
+          setSelectedAgentId(def.id);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
+
+  function handleAgentChange(id) {
+    setSelectedAgentId(id);
+    setMessages([{ role: 'assistant', content: C.greeting }]);
+    setInput('');
+  }
 
   async function sendMessage(text) {
     const userMsg = text || input.trim();
     if (!userMsg || loading) return;
     setInput('');
-    const updated = [...messages, { role: 'user', content: userMsg }];
-    setMessages(updated);
+    const history = [...messages, { role: 'user', content: userMsg }];
+    setMessages(history);
     setLoading(true);
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: updated, lang }),
+        body: JSON.stringify({ messages: history, lang, agentId: selectedAgentId }),
       });
-      const data = await res.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.content || C.error }]);
+
+      if (!res.ok || !res.body) throw new Error();
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = '';
+      let buffer = '';
+      let msgAdded = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed.delta) {
+              if (!msgAdded) {
+                msgAdded = true;
+                setLoading(false);
+              }
+              accumulated += parsed.delta;
+              setMessages(prev => {
+                const copy = [...prev];
+                if (copy[copy.length - 1]?.role === 'assistant') {
+                  copy[copy.length - 1] = { role: 'assistant', content: accumulated };
+                } else {
+                  copy.push({ role: 'assistant', content: accumulated });
+                }
+                return copy;
+              });
+            }
+          } catch { /* skip malformed chunk */ }
+        }
+      }
+
+      if (!accumulated) {
+        setMessages(prev => [...prev, { role: 'assistant', content: C.error }]);
+      }
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: C.error }]);
     } finally {
@@ -46,9 +111,32 @@ export default function ChatPage() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   }
 
+  const selectedAgent = agents.find(a => a.id === selectedAgentId);
+
   return (
     <div className="chat-page">
       <div className="chat-header">
+        {agents.length > 1 && (
+          <div style={{ marginBottom: '0.75rem' }}>
+            <select
+              className="form-select"
+              style={{ maxWidth: '280px', fontSize: '0.85rem', padding: '0.4rem 0.75rem' }}
+              value={selectedAgentId || ''}
+              onChange={e => handleAgentChange(e.target.value)}
+            >
+              {agents.map(a => (
+                <option key={a.id} value={a.id}>
+                  {a.name}{a.isDefault ? ' ★' : ''}
+                </option>
+              ))}
+            </select>
+            {selectedAgent?.description && (
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                {selectedAgent.description}
+              </p>
+            )}
+          </div>
+        )}
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem' }}>{C.title}</h2>
         <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{C.subtitle}</p>
       </div>

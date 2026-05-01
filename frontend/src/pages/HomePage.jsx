@@ -76,18 +76,13 @@ export default function HomePage() {
     } catch { setSubStatus('error'); }
   }
 
-  function share(platform) {
-    const url = window.location.origin;
-    const text = 'Get expert mortgage guidance and AI-powered tools at ClearPath Mortgage.';
-    if (platform === 'twitter') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-    if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-    if (platform === 'copy') navigator.clipboard.writeText(url);
-  }
-
   return (
     <div className="page">
+
+      {/* ── Hero ── */}
       <section className="hero">
         <div className="container">
+          <div className="hero-badge">{H.heroBadge}</div>
           <h1>{H.heroTitle1}<span>{H.heroHighlight}</span>{H.heroTitle2}</h1>
           <p>{H.heroSub}</p>
           <div className="hero-actions">
@@ -96,9 +91,13 @@ export default function HomePage() {
               {H.ctaChat}
             </Link>
           </div>
+          <div className="hero-trust">
+            {H.trustItems.map(t => <span key={t} className="trust-item">{t}</span>)}
+          </div>
         </div>
       </section>
 
+      {/* ── Stats ── */}
       <div className="stats-bar">
         <div className="stat-item">
           <div className="stat-number">{H.stat1}</div>
@@ -114,6 +113,7 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── Services ── */}
       <section className="section">
         <div className="container">
           <h2 style={{ marginBottom: '0.5rem' }}>{H.servicesTitle}</h2>
@@ -121,7 +121,7 @@ export default function HomePage() {
           <div className="card-grid card-grid-3">
             {H.services.map(s => (
               <div key={s.title} className="card">
-                <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>{s.icon}</div>
+                <div className="service-icon">{s.icon}</div>
                 <h3 style={{ marginBottom: '0.5rem' }}>{s.title}</h3>
                 <p style={{ fontSize: '0.875rem' }}>{s.desc}</p>
               </div>
@@ -130,6 +130,46 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── How It Works ── */}
+      <section className="section" style={{ background: 'var(--white)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <span className="section-eyebrow">{H.stepsEyebrow}</span>
+            <h2 style={{ marginTop: '0.5rem' }}>{H.stepsTitle}</h2>
+          </div>
+          <div className="steps-grid">
+            {H.steps.map(s => (
+              <div key={s.num} className="step">
+                <div className="step-num">{s.num}</div>
+                <h3>{s.title}</h3>
+                <p>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="section">
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <span className="section-eyebrow">{H.testimonialsEyebrow}</span>
+            <h2 style={{ marginTop: '0.5rem' }}>{H.testimonialsTitle}</h2>
+          </div>
+          <div className="testimonials-grid">
+            {H.testimonials.map(t => (
+              <div key={t.name} className="testimonial">
+                <div className="testimonial-quote">"</div>
+                <p className="testimonial-text">{t.text}</p>
+                <div className="testimonial-author">{t.name}</div>
+                <div className="testimonial-loc">{t.loc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Newsletter ── */}
       <section className="newsletter-banner">
         <div className="container">
           <h2>{H.newsletterTitle}</h2>
@@ -161,13 +201,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-        <div className="container" style={{ textAlign: 'center' }}>
-          <p style={{ marginBottom: '0.875rem', fontSize: '0.85rem' }}>{H.shareText}</p>
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn btn-outline btn-sm" onClick={() => share('twitter')}>{H.shareX}</button>
-            <button className="btn btn-outline btn-sm" onClick={() => share('facebook')}>{H.shareFacebook}</button>
-            <button className="btn btn-outline btn-sm" onClick={() => share('copy')}>{H.copyLink}</button>
+      {/* ── Bottom CTA ── */}
+      <section className="cta-bottom">
+        <div className="container">
+          <h2>{H.ctaBottomTitle}</h2>
+          <p>{H.ctaBottomSub}</p>
+          <div className="hero-actions">
+            <Link to="/quote" className="btn btn-gold btn-lg">{H.ctaQuote}</Link>
+            <Link to="/chat" className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)' }}>
+              {H.ctaChat}
+            </Link>
           </div>
         </div>
       </section>

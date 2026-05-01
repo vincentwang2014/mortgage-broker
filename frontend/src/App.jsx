@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Routes, Route, NavLink, Link } from 'react-router-dom';
 import { translations } from './lib/i18n.js';
 import HomePage from './pages/HomePage.jsx';
@@ -14,6 +14,13 @@ export function useLang() { return useContext(LangContext); }
 function Nav() {
   const { lang, setLang, T } = useLang();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
 
   const links = [
     { to: '/', label: T.nav.home, end: true },
@@ -25,7 +32,7 @@ function Nav() {
 
   return (
     <>
-      <nav className="nav">
+      <nav className={`nav${scrolled ? ' nav-scrolled' : ''}`}>
         <div className="nav-inner">
           <Link to="/" className="nav-brand">{T.nav.brand}</Link>
           <div className="nav-links">

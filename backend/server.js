@@ -8,6 +8,8 @@ import chatRouter from './api/chat.js';
 import quoteRouter from './api/quote.js';
 import subscribeRouter from './api/subscribe.js';
 import adminRouter from './api/admin.js';
+import agentsRouter from './api/agents.js';
+import documentsRouter from './api/documents.js';
 import { sendWeeklyNewsletter } from './api/newsletter.js';
 
 const app = express();
@@ -15,15 +17,18 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 app.use(express.json({ limit: '10mb' }));
+app.use('/api/documents', express.json({ limit: '25mb' }));
 
 app.use('/api/news', newsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/quote', quoteRouter);
 app.use('/api/subscribe', subscribeRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/agents', agentsRouter);
+app.use('/api/documents', documentsRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
