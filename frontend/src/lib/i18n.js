@@ -14,9 +14,9 @@ export const translations = {
     },
     home: {
       heroTitle1: 'Your ',
-      heroHighlight: 'ClearPath',
-      heroTitle2: ' to Homeownership',
-      heroSub: 'Licensed California mortgage broker — expert guidance, AI-powered tools, and rates from 40+ lenders.',
+      heroHighlight: 'Best Rate',
+      heroTitle2: ', Our Promise',
+      heroSub: 'Licensed California mortgage broker — expert guidance and competitive rates from 40+ lenders.',
       ctaQuote: 'Get a Rate Quote',
       ctaChat: 'Ask AI Advisor',
       stat1: '40+', stat1Label: 'Lender Partners',
@@ -38,7 +38,7 @@ export const translations = {
       subscribing: 'Subscribing...',
       subscribeError: 'Something went wrong. Try again.',
       addName: 'Want to add your name too?',
-      shareText: 'Know someone buying a home? Share ClearPath Mortgage.',
+      shareText: 'Know someone buying a home? Share 800 Home Loan.',
       shareX: 'Share on X', shareFacebook: 'Share on Facebook', copyLink: 'Copy Link',
       heroBadge: 'Licensed California Mortgage Broker',
       trustItems: ['✓ No SSN Required', '✓ 40+ Lender Partners', '✓ Free Consultation'],
@@ -54,7 +54,7 @@ export const translations = {
       testimonials: [
         { text: 'Fast, transparent, and genuinely helpful. My rate was locked in 3 days — no stress, no surprises.', name: 'Michael T.', loc: 'San Jose, CA' },
         { text: 'The AI advisor answered every question instantly. Hands down the best mortgage experience I\'ve had.', name: 'Linda C.', loc: 'Irvine, CA' },
-        { text: 'As a self-employed buyer, finding the right DSCR loan was a game-changer. ClearPath made it simple.', name: 'David R.', loc: 'Los Angeles, CA' },
+        { text: 'As a self-employed buyer, finding the right DSCR loan was a game-changer. 800 Home Loan made it simple.', name: 'David R.', loc: 'Los Angeles, CA' },
       ],
       ctaBottomTitle: 'Ready to Find Your Rate?',
       ctaBottomSub: 'No SSN. No credit pull. No commitment — just clear answers in minutes.',
@@ -62,7 +62,7 @@ export const translations = {
     chat: {
       title: 'AI Mortgage Advisor',
       subtitle: 'Powered by Claude — Not a commitment to lend',
-      greeting: "Hi! I'm ClearPath's AI mortgage advisor. Ask me anything about loan programs, qualification, rates, or the homebuying process.",
+      greeting: "Hi! I'm 800 Home Loan's AI mortgage advisor. Ask me anything about loan programs, qualification, rates, or the homebuying process.",
       placeholder: 'Ask about rates, programs, qualification...',
       send: 'Send',
       prompts: [
@@ -231,7 +231,7 @@ export const translations = {
       terms: ['30-Year Fixed', '20-Year Fixed', '15-Year Fixed', '10-Year Fixed'],
       noCalc: 'Enter purchase price and down payment to calculate.',
     },
-    footer: `${siteConfig.brandEn} — ${siteConfig.taglineEn} — NMLS ${siteConfig.nmls}`,
+    footer: `${siteConfig.taglineEn} — NMLS ${siteConfig.nmls}`,
     footerSub: 'Not a commitment to lend. Equal Housing Lender.',
   },
 
@@ -248,9 +248,9 @@ export const translations = {
     },
     home: {
       heroTitle1: '您的',
-      heroHighlight: '清路',
-      heroTitle2: '购房之路',
-      heroSub: '加州持牌贷款经纪 — 专业指导、AI智能工具，接入40+贷款机构实时利率。',
+      heroHighlight: '最优利率',
+      heroTitle2: '，从这里开始',
+      heroSub: '加州持牌贷款经纪 — 专业指导，接入40+贷款机构，为您锁定最具竞争力的利率。',
       ctaQuote: '获取利率报价',
       ctaChat: '咨询AI顾问',
       stat1: '40+', stat1Label: '合作贷款机构',
@@ -272,7 +272,7 @@ export const translations = {
       subscribing: '订阅中...',
       subscribeError: '出错了，请重试。',
       addName: '想留下您的姓名？',
-      shareText: '认识正在购房的朋友吗？分享清路贷款。',
+      shareText: '认识正在购房的朋友吗？分享 800 贷款。',
       shareX: '分享到X', shareFacebook: '分享到Facebook', copyLink: '复制链接',
       heroBadge: '加州持牌贷款经纪',
       trustItems: ['✓ 无需社安号', '✓ 40+合作贷款机构', '✓ 免费咨询'],
@@ -296,7 +296,7 @@ export const translations = {
     chat: {
       title: 'AI贷款顾问',
       subtitle: '由Claude驱动 — 不构成贷款承诺',
-      greeting: '您好！我是清路贷款的AI顾问。关于贷款类型、申请资质、利率或购房流程，欢迎随时提问，我会给您提供清晰具体的解答。',
+      greeting: '您好！我是 800 贷款的AI顾问。关于贷款类型、申请资质、利率或购房流程，欢迎随时提问，我会给您提供清晰具体的解答。',
       placeholder: '咨询利率、贷款类型、申请条件...',
       send: '发送',
       prompts: [
@@ -454,7 +454,7 @@ export const translations = {
       terms: ['30年固定', '20年固定', '15年固定', '10年固定'],
       noCalc: '请输入房产价格和首付金额以开始计算。',
     },
-    footer: `${siteConfig.brandZh} — ${siteConfig.taglineZh} — NMLS ${siteConfig.nmls}`,
+    footer: `${siteConfig.taglineZh} — NMLS ${siteConfig.nmls}`,
     footerSub: '不构成贷款承诺。平等住房贷款机构。',
   },
 };

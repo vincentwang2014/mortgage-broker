@@ -5,8 +5,8 @@
 
 const siteConfig = {
   // 品牌名称 / Brand Name
-  brandEn: 'ClearPath Mortgage',
-  brandZh: '清路贷款',
+  brandEn: '800 Home Loan',
+  brandZh: '800 贷款',
 
   // 副标题 / Tagline
   taglineEn: 'Licensed California Mortgage Broker',
@@ -18,10 +18,6 @@ const siteConfig = {
   // 联系方式 / Contact (displayed in footer, optional)
   phone: '',
   email: '',
-
-  // Hero subtitle (optional override)
-  heroSubEn: 'Licensed California mortgage broker — expert guidance, AI-powered tools, and rates from 40+ lenders.',
-  heroSubZh: '加州持牌贷款经纪 — 专业指导、AI智能工具，接入40+贷款机构实时利率。',
 };
 
 export default siteConfig;

@@ -32,11 +32,18 @@ function Nav() {
     { to: '/prequal', label: T.nav.prequal, cta: true },
   ];
 
+  const brandParts = T.nav.brand.split(' ');
+  const brandNum = brandParts[0];
+  const brandText = brandParts.slice(1).join(' ');
+
   return (
     <>
       <nav className={`nav${scrolled ? ' nav-scrolled' : ''}`}>
         <div className="nav-inner">
-          <Link to="/" className="nav-brand">{T.nav.brand}</Link>
+          <Link to="/" className="nav-brand">
+            <span className="nav-brand-num">{brandNum}</span>
+            {brandText && <span className="nav-brand-text"> {brandText}</span>}
+          </Link>
           <div className="nav-links">
             {links.map(l => (
               <NavLink
@@ -108,7 +115,11 @@ export default function App() {
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <footer className="footer">
-        <p>{T.footer}</p>
+        <p className="footer-wordmark">
+          <span className="nav-brand-num">800</span>
+          <span className="nav-brand-text"> Home Loan</span>
+        </p>
+        <p style={{ marginTop: '0.5rem' }}>{T.footer}</p>
         <p style={{ marginTop: '0.25rem' }}>{T.footerSub}</p>
       </footer>
     </LangContext.Provider>
