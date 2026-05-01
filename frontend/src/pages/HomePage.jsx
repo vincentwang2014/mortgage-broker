@@ -175,7 +175,7 @@ export default function HomePage() {
           <h2>{H.newsletterTitle}</h2>
           <p>{H.newsletterSub}</p>
           {subStatus === 'success' ? (
-            <p style={{ color: '#c9a96e', fontWeight: 500 }}>{H.subscribeSuccess}</p>
+            <p style={{ color: 'var(--teal)', fontWeight: 500 }}>{H.subscribeSuccess}</p>
           ) : (
             <form className="subscribe-form" onSubmit={handleInlineSubscribe}>
               <input

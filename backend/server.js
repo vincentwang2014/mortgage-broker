@@ -20,6 +20,8 @@ import adminRouter from './api/admin.js';
 import agentsRouter from './api/agents.js';
 import documentsRouter from './api/documents.js';
 import prequalRouter from './api/prequal.js';
+import chatlogRouter from './api/chatlog.js';
+import guidelinesRouter from './api/guidelines.js';
 import { sendWeeklyNewsletter } from './api/newsletter.js';
 
 const app = express();
@@ -40,6 +42,8 @@ app.use('/api/admin', adminRouter);
 app.use('/api/agents', agentsRouter);
 app.use('/api/documents', documentsRouter);
 app.use('/api/prequal', prequalRouter);
+app.use('/api/chatlog', chatlogRouter);
+app.use('/api/guidelines', guidelinesRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -60,6 +64,18 @@ cron.schedule('0 */6 * * *', async () => {
     console.log('[CRON] News cache refreshed');
   } catch (e) {
     console.error('[CRON] News refresh failed:', e.message);
+  }
+});
+
+// Weekly guideline check every Monday 7am PT (14:00 UTC)
+cron.schedule('0 14 * * 1', async () => {
+  console.log('[CRON] Checking guideline updates...');
+  try {
+    const { checkGuidelineUpdates } = await import('./api/guidelines.js');
+    const results = await checkGuidelineUpdates();
+    console.log(`[CRON] Guidelines: ${results.length} new docs added`);
+  } catch (e) {
+    console.error('[CRON] Guideline check failed:', e.message);
   }
 });
 

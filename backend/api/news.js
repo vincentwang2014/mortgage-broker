@@ -2,6 +2,7 @@ import express from 'express';
 import Parser from 'rss-parser';
 import Anthropic from '@anthropic-ai/sdk';
 import { kv } from '@vercel/kv';
+import { createDoc, pruneDocsByType } from '../lib/rag.js';
 
 const router = express.Router();
 const parser = new Parser({ timeout: 8000, headers: { 'User-Agent': 'ClearPathMortgage/1.0' } });
@@ -89,6 +90,18 @@ export async function refreshNewsCache() {
   } catch (e) {
     console.warn('[KV] Cache write failed (local dev ok):', e.message);
   }
+  try {
+    pruneDocsByType('news');
+    for (const article of summarized) {
+      createDoc({
+        title: article.headline,
+        type: 'news',
+        date: article.date,
+        source: article.source,
+        content: `Source: ${article.source} | Date: ${article.date}\n\n${article.summary}`,
+      });
+    }
+  } catch (e) { console.warn('[RAG] News ingestion failed:', e.message); }
   return summarized;
 }
 

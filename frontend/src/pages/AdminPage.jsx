@@ -80,6 +80,30 @@ const LABELS = {
     docLoadError: 'Failed to load documents',
     docSaveError: 'Failed to save document',
     docTypeOptions: ['general', 'guideline', 'rate-sheet', 'email', 'announcement', 'other'],
+    // Chat Logs tab
+    tabChatLogs: 'Chat Logs',
+    chatLogsTitle: 'Conversation Logs',
+    chatLogsDesc: 'Review AI conversations. Add corrections to improve future responses.',
+    chatLogsEmpty: 'No conversations saved yet.',
+    chatLogsLoadError: 'Failed to load conversations',
+    chatLogsDelete: 'Delete',
+    chatLogsDeleteConfirm: 'Delete this conversation log?',
+    chatLogsMsgs: 'messages',
+    chatLogsAddCorrection: 'Add Correction',
+    chatLogsCorrectionTitle: 'Correction Title',
+    chatLogsCorrectionText: 'Correct the AI response — what should it have said?',
+    chatLogsCorrectionSave: 'Save to Knowledge Base',
+    chatLogsCorrectionSaving: 'Saving...',
+    chatLogsCorrectionDone: 'Saved!',
+    chatLogsCorrectionError: 'Failed to save',
+    chatLogsCancel: 'Cancel',
+    chatLogsUser: 'User',
+    chatLogsAI: 'AI',
+    chatLogsView: 'View',
+    chatLogsClose: 'Close',
+    chatLogsGuidelines: 'Check Guideline Updates',
+    chatLogsGuidelinesRunning: 'Checking...',
+    chatLogsGuidelinesDone: (n) => `Added ${n} new guideline docs`,
   },
   zh: {
     title: 'AI顾问后台管理',
@@ -159,6 +183,30 @@ const LABELS = {
     docLoadError: '加载文档失败',
     docSaveError: '保存文档失败',
     docTypeOptions: ['general', 'guideline', 'rate-sheet', 'email', 'announcement', 'other'],
+    // Chat Logs tab
+    tabChatLogs: '聊天记录',
+    chatLogsTitle: '对话记录管理',
+    chatLogsDesc: '查看 AI 对话记录，添加纠错内容以改善未来的回答。',
+    chatLogsEmpty: '暂无对话记录。',
+    chatLogsLoadError: '加载对话记录失败',
+    chatLogsDelete: '删除',
+    chatLogsDeleteConfirm: '确认删除此对话记录？',
+    chatLogsMsgs: '条消息',
+    chatLogsAddCorrection: '添加纠错',
+    chatLogsCorrectionTitle: '纠错标题',
+    chatLogsCorrectionText: 'AI 应该如何回答？请填写正确的内容：',
+    chatLogsCorrectionSave: '保存到知识库',
+    chatLogsCorrectionSaving: '保存中...',
+    chatLogsCorrectionDone: '已保存！',
+    chatLogsCorrectionError: '保存失败',
+    chatLogsCancel: '取消',
+    chatLogsUser: '用户',
+    chatLogsAI: 'AI',
+    chatLogsView: '查看',
+    chatLogsClose: '收起',
+    chatLogsGuidelines: '检查法规更新',
+    chatLogsGuidelinesRunning: '检查中...',
+    chatLogsGuidelinesDone: (n) => `已新增 ${n} 条法规文档`,
   },
 };
 
@@ -264,7 +312,7 @@ function AgentCard({ agent, onEdit, labels }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.375rem' }}>
             <span style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{agent.name}</span>
             {agent.isDefault && (
-              <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(201,169,110,0.2)', color: 'var(--gold)', padding: '0.15rem 0.5rem', borderRadius: '100px', border: '1px solid rgba(201,169,110,0.35)' }}>
+              <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(37,99,235,0.2)', color: 'var(--gold)', padding: '0.15rem 0.5rem', borderRadius: '100px', border: '1px solid rgba(37,99,235,0.35)' }}>
                 {labels.agentDefault}
               </span>
             )}
@@ -355,7 +403,7 @@ function AgentForm({ initial, onSave, onDelete, onCancel, labels }) {
   }
 
   return (
-    <div className="form-section" style={{ border: '2px solid rgba(201,169,110,0.4)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
+    <div className="form-section" style={{ border: '2px solid rgba(37,99,235,0.4)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         <div className="form-section-title" style={{ margin: 0 }}>
           {isNew ? labels.agentsNew : `${labels.agentEdit}: ${initial.name}`}
@@ -578,7 +626,7 @@ function AddDocumentForm({ mode, password, labels, onDone, onCancel }) {
   }
 
   return (
-    <div className="form-section" style={{ border: '2px solid rgba(201,169,110,0.4)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
+    <div className="form-section" style={{ border: '2px solid rgba(37,99,235,0.4)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <div className="form-section-title" style={{ margin: 0 }}>
           {mode === 'file' ? labels.docAddFile : labels.docAddText}
@@ -855,6 +903,218 @@ function AgentsManager({ password, labels }) {
   );
 }
 
+// ── Chat Logs tab ─────────────────────────────────────────────────────────────
+function CorrectionForm({ sessionId, password, labels, onDone, onCancel }) {
+  const [title, setTitle] = useState('');
+  const [correction, setCorrection] = useState('');
+  const [status, setStatus] = useState('idle');
+
+  async function handleSave() {
+    if (!correction.trim()) return;
+    setStatus('saving');
+    try {
+      const res = await fetch(`/api/chatlog/${sessionId}/correction`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ title, correction }),
+      });
+      if (!res.ok) throw new Error();
+      setStatus('done');
+      setTimeout(onDone, 1200);
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
+  }
+
+  return (
+    <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(37,99,235,0.08)', borderRadius: '8px', border: '1px solid rgba(37,99,235,0.3)' }}>
+      <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+        <label className="form-label">{labels.chatLogsCorrectionTitle}</label>
+        <input className="form-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. FHA loan limit correction" />
+      </div>
+      <div className="form-group">
+        <label className="form-label">{labels.chatLogsCorrectionText}</label>
+        <textarea
+          className="form-textarea"
+          value={correction}
+          onChange={e => setCorrection(e.target.value)}
+          style={{ minHeight: '120px', fontSize: '0.85rem', lineHeight: '1.6', resize: 'vertical' }}
+          placeholder="The correct answer should be..."
+        />
+      </div>
+      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '0.75rem', justifyContent: 'flex-end' }}>
+        {status === 'done' && <span style={{ color: 'green', fontSize: '0.82rem', fontWeight: 500 }}>{labels.chatLogsCorrectionDone}</span>}
+        {status === 'error' && <span style={{ color: 'red', fontSize: '0.82rem' }}>{labels.chatLogsCorrectionError}</span>}
+        <button className="btn btn-outline btn-sm" onClick={onCancel}>{labels.chatLogsCancel}</button>
+        <button className="btn btn-primary btn-sm" onClick={handleSave} disabled={status === 'saving' || !correction.trim()}>
+          {status === 'saving' ? labels.chatLogsCorrectionSaving : labels.chatLogsCorrectionSave}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SessionCard({ session, password, labels }) {
+  const [expanded, setExpanded] = useState(false);
+  const [messages, setMessages] = useState(null);
+  const [showCorrection, setShowCorrection] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function loadMessages() {
+    if (messages) { setExpanded(e => !e); return; }
+    try {
+      const res = await fetch(`/api/chatlog/${session.id}`, { headers: { 'x-admin-password': password } });
+      const d = await res.json();
+      setMessages(d.messages || []);
+      setExpanded(true);
+    } catch {}
+  }
+
+  async function handleDelete() {
+    if (!window.confirm(labels.chatLogsDeleteConfirm)) return;
+    setDeleting(true);
+    await fetch(`/api/chatlog/${session.id}`, { method: 'DELETE', headers: { 'x-admin-password': password } });
+    setDeleting(false);
+  }
+
+  const savedDate = new Date(session.savedAt).toLocaleString();
+
+  return (
+    <div className="card" style={{ padding: '0.875rem 1rem', marginBottom: '0.625rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
+            {savedDate} · {session.messageCount} {labels.chatLogsMsgs} · {session.lang?.toUpperCase()}
+          </div>
+          <div style={{ fontSize: '0.88rem', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {session.preview || '—'}
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+          <button className="btn btn-outline btn-sm" onClick={loadMessages}>
+            {expanded ? labels.chatLogsClose : labels.chatLogsView}
+          </button>
+          <button
+            className="btn btn-outline btn-sm"
+            style={{ color: '#dc2626', borderColor: '#dc2626' }}
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            {labels.chatLogsDelete}
+          </button>
+        </div>
+      </div>
+
+      {expanded && messages && (
+        <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '0.875rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', maxHeight: '400px', overflowY: 'auto' }}>
+            {messages.filter(m => m.role !== 'system').map((m, i) => (
+              <div key={i} style={{
+                padding: '0.5rem 0.75rem',
+                borderRadius: '8px',
+                background: m.role === 'user' ? 'var(--cream-dark)' : 'rgba(10,22,40,0.05)',
+                fontSize: '0.82rem',
+                lineHeight: '1.55',
+                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                maxWidth: '90%',
+              }}>
+                <span style={{ fontWeight: 600, fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>
+                  {m.role === 'user' ? labels.chatLogsUser : labels.chatLogsAI}
+                </span>
+                {m.content}
+              </div>
+            ))}
+          </div>
+          {!showCorrection ? (
+            <div style={{ marginTop: '0.875rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn btn-gold btn-sm" onClick={() => setShowCorrection(true)}>
+                {labels.chatLogsAddCorrection}
+              </button>
+            </div>
+          ) : (
+            <CorrectionForm
+              sessionId={session.id}
+              password={password}
+              labels={labels}
+              onDone={() => setShowCorrection(false)}
+              onCancel={() => setShowCorrection(false)}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ChatLogsManager({ password, labels }) {
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [guidelineStatus, setGuidelineStatus] = useState('idle');
+  const [guidelineMsg, setGuidelineMsg] = useState('');
+
+  useEffect(() => { fetchSessions(); }, []);
+
+  async function fetchSessions() {
+    setLoading(true);
+    setLoadError('');
+    try {
+      const res = await fetch('/api/chatlog', { headers: { 'x-admin-password': password } });
+      if (!res.ok) throw new Error();
+      setSessions(await res.json());
+    } catch { setLoadError(labels.chatLogsLoadError); }
+    finally { setLoading(false); }
+  }
+
+  async function runGuidelineCheck() {
+    setGuidelineStatus('running');
+    setGuidelineMsg('');
+    try {
+      const res = await fetch('/api/guidelines/refresh', {
+        method: 'POST',
+        headers: { 'x-admin-password': password },
+      });
+      const d = await res.json();
+      setGuidelineMsg(labels.chatLogsGuidelinesDone(d.added || 0));
+    } catch {
+      setGuidelineMsg('Error');
+    }
+    setGuidelineStatus('done');
+    setTimeout(() => { setGuidelineStatus('idle'); setGuidelineMsg(''); }, 5000);
+  }
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '3rem 0' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>;
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{labels.chatLogsDesc}</p>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          {guidelineMsg && <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{guidelineMsg}</span>}
+          <button
+            className="btn btn-outline btn-sm"
+            onClick={runGuidelineCheck}
+            disabled={guidelineStatus === 'running'}
+          >
+            {guidelineStatus === 'running' ? labels.chatLogsGuidelinesRunning : labels.chatLogsGuidelines}
+          </button>
+        </div>
+      </div>
+
+      {loadError && <p style={{ color: 'red', fontSize: '0.85rem', marginBottom: '1rem' }}>{loadError}</p>}
+
+      {sessions.length === 0 && !loadError && (
+        <div className="state-box"><p>{labels.chatLogsEmpty}</p></div>
+      )}
+
+      {sessions.map(s => (
+        <SessionCard key={s.id} session={s} password={password} labels={labels} />
+      ))}
+    </div>
+  );
+}
+
 // ── Admin page ────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const { lang } = useLang();
@@ -900,6 +1160,7 @@ export default function AdminPage() {
   const tabs = [
     { key: 'agents', label: L.tabAgents },
     { key: 'documents', label: L.tabDocuments },
+    { key: 'chatlogs', label: L.tabChatLogs },
     { key: 'knowledge', label: L.tabKnowledge },
     { key: 'prompt', label: L.tabPrompt },
   ];
@@ -939,6 +1200,8 @@ export default function AdminPage() {
       {tab === 'agents' && <AgentsManager password={password} labels={L} />}
 
       {tab === 'documents' && <DocumentsManager password={password} labels={L} />}
+
+      {tab === 'chatlogs' && <ChatLogsManager password={password} labels={L} />}
 
       {tab === 'knowledge' && (
         <Editor

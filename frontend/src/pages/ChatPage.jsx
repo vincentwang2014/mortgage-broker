@@ -12,6 +12,7 @@ export default function ChatPage() {
   const [agents, setAgents] = useState([]);
   const [selectedAgentId, setSelectedAgentId] = useState(null);
   const bottomRef = useRef(null);
+  const sessionIdRef = useRef(Date.now().toString(36) + Math.random().toString(36).slice(2));
 
   useEffect(() => {
     setMessages([{ role: 'assistant', content: C.greeting }]);
@@ -36,6 +37,7 @@ export default function ChatPage() {
 
   function handleAgentChange(id) {
     setSelectedAgentId(id);
+    sessionIdRef.current = Date.now().toString(36) + Math.random().toString(36).slice(2);
     setMessages([{ role: 'assistant', content: C.greeting }]);
     setInput('');
   }
@@ -99,6 +101,17 @@ export default function ChatPage() {
 
       if (!accumulated) {
         setMessages(prev => [...prev, { role: 'assistant', content: C.error }]);
+      } else {
+        fetch('/api/chatlog', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: sessionIdRef.current,
+            messages: [...history, { role: 'assistant', content: accumulated }],
+            agentId: selectedAgentId,
+            lang,
+          }),
+        }).catch(() => {});
       }
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: C.error }]);

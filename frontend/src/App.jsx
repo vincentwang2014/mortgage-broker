@@ -32,17 +32,35 @@ function Nav() {
     { to: '/prequal', label: T.nav.prequal, cta: true },
   ];
 
-  const brandParts = T.nav.brand.split(' ');
-  const brandNum = brandParts[0];
-  const brandText = brandParts.slice(1).join(' ');
-
   return (
     <>
       <nav className={`nav${scrolled ? ' nav-scrolled' : ''}`}>
         <div className="nav-inner">
           <Link to="/" className="nav-brand">
-            <span className="nav-brand-num">{brandNum}</span>
-            {brandText && <span className="nav-brand-text"> {brandText}</span>}
+            <svg className="nav-brand-icon" viewBox="0 0 480 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="navGrad" x1="0" y1="0" x2="480" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#1D4ED8"/>
+                  <stop offset="52%" stopColor="#2563EB"/>
+                  <stop offset="100%" stopColor="#2EC4B6"/>
+                </linearGradient>
+              </defs>
+              <g stroke="url(#navGrad)" strokeWidth="16" fill="none">
+                <rect x="38" y="24" width="104" height="132" rx="24"/>
+                <rect x="188" y="24" width="104" height="132" rx="24"/>
+                <rect x="338" y="24" width="104" height="132" rx="24"/>
+              </g>
+              <g fill="url(#navGrad)">
+                <rect x="72" y="54" width="36" height="36" rx="8"/>
+                <rect x="72" y="100" width="36" height="36" rx="8"/>
+                <rect x="227" y="47" width="26" height="86" rx="10"/>
+                <rect x="377" y="47" width="26" height="86" rx="10"/>
+              </g>
+            </svg>
+            <span className="nav-brand-wordmark">
+              <span className="nav-brand-num">800</span>
+              <span className="nav-brand-text">Home Loan</span>
+            </span>
           </Link>
           <div className="nav-links">
             {links.map(l => (
@@ -88,7 +106,7 @@ function Nav() {
         ))}
         <button
           className="mobile-link"
-          style={{ textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gold)' }}
+          style={{ textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)' }}
           onClick={() => { setLang(lang === 'en' ? 'zh' : 'en'); setOpen(false); }}
         >
           {lang === 'en' ? '切换中文' : 'Switch to English'}
@@ -115,10 +133,32 @@ export default function App() {
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <footer className="footer">
-        <p className="footer-wordmark">
-          <span className="nav-brand-num">800</span>
-          <span className="nav-brand-text"> Home Loan</span>
-        </p>
+        <div className="footer-wordmark">
+          <svg className="nav-brand-icon" viewBox="0 0 480 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="footerGrad" x1="0" y1="0" x2="480" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#1D4ED8"/>
+                <stop offset="52%" stopColor="#2563EB"/>
+                <stop offset="100%" stopColor="#2EC4B6"/>
+              </linearGradient>
+            </defs>
+            <g stroke="url(#footerGrad)" strokeWidth="16" fill="none">
+              <rect x="38" y="24" width="104" height="132" rx="24"/>
+              <rect x="188" y="24" width="104" height="132" rx="24"/>
+              <rect x="338" y="24" width="104" height="132" rx="24"/>
+            </g>
+            <g fill="url(#footerGrad)">
+              <rect x="72" y="54" width="36" height="36" rx="8"/>
+              <rect x="72" y="100" width="36" height="36" rx="8"/>
+              <rect x="227" y="47" width="26" height="86" rx="10"/>
+              <rect x="377" y="47" width="26" height="86" rx="10"/>
+            </g>
+          </svg>
+          <span className="nav-brand-wordmark">
+            <span className="nav-brand-num">800</span>
+            <span className="nav-brand-text">Home Loan</span>
+          </span>
+        </div>
         <p style={{ marginTop: '0.5rem' }}>{T.footer}</p>
         <p style={{ marginTop: '0.25rem' }}>{T.footerSub}</p>
       </footer>

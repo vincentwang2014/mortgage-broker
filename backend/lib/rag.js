@@ -102,6 +102,20 @@ export function deleteDoc(id) {
   return true;
 }
 
+export function pruneDocsByType(type) {
+  try {
+    const files = readdirSync(DOCS_DIR).filter(f => f.endsWith('.json'));
+    let count = 0;
+    for (const f of files) {
+      try {
+        const doc = JSON.parse(readFileSync(join(DOCS_DIR, f), 'utf-8'));
+        if (doc.type === type) { unlinkSync(join(DOCS_DIR, f)); count++; }
+      } catch {}
+    }
+    return count;
+  } catch { return 0; }
+}
+
 export function createDoc({ title, type, lender, date, source, content }) {
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
   const chunks = chunkText(content).map((text, i) => ({ i, text }));
