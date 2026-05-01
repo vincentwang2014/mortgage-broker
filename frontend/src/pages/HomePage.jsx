@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles, ShieldCheck, Users, CheckCircle2 } from 'lucide-react';
 import { useLang } from '../App.jsx';
 
 function SubscribeModal({ onClose }) {
@@ -82,21 +83,55 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section className="hero">
         <div className="container">
-          <div className="hero-badge">{H.heroBadge}</div>
-          <img
-            src="/logos/svg/logo-hero-dark.svg"
-            alt="800 Home Loan"
-            className="logo-hero"
-          />
-          <p>{H.heroSub}</p>
-          <div className="hero-actions">
-            <Link to="/quote" className="btn btn-gold btn-lg">{H.ctaQuote}</Link>
-            <Link to="/chat" className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)' }}>
-              {H.ctaChat}
-            </Link>
-          </div>
-          <div className="hero-trust">
-            {H.trustItems.map(t => <span key={t} className="trust-item">{t}</span>)}
+          <div className="hero-grid">
+
+            {/* Left column */}
+            <div className="hero-col-left">
+              <div className="hero-badge">{H.heroBadge}</div>
+              <h1>
+                {H.heroTitle1}<span>{H.heroHighlight}</span>{H.heroTitle2}
+              </h1>
+              <p className="hero-subtitle">{H.heroSub}</p>
+              <div className="hero-actions">
+                <Link to="/quote" className="btn btn-gold btn-lg btn-hero-primary">
+                  {H.ctaQuote} <ArrowRight size={20} />
+                </Link>
+                <Link to="/chat" className="btn btn-hero-secondary btn-lg">
+                  {H.ctaChat} <Sparkles size={20} />
+                </Link>
+              </div>
+              <div className="hero-trust">
+                {[ShieldCheck, Users, CheckCircle2].map((Icon, i) => (
+                  <div key={i} className="trust-item">
+                    <Icon size={15} />
+                    {H.trustItems[i].replace(/^✓\s*/, '')}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right column — brand card */}
+            <div className="hero-col-right">
+              <div className="hero-brand-card-glow" />
+              <div className="hero-brand-card">
+                <img src="/logos/svg/logo-hero-dark.svg" alt="800 Home Loan" className="hero-card-logo" />
+                <div className="hero-card-stats">
+                  <div>
+                    <span className="hero-card-stat-num">{H.stat1}</span>
+                    <span className="hero-card-stat-label">Lenders</span>
+                  </div>
+                  <div>
+                    <span className="hero-card-stat-num">{H.stat2}</span>
+                    <span className="hero-card-stat-label">Limit</span>
+                  </div>
+                  <div>
+                    <span className="hero-card-stat-num">{H.stat3}</span>
+                    <span className="hero-card-stat-label">Credit</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
