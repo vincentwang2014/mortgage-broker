@@ -7,7 +7,10 @@ import { dirname, join } from 'path';
 import { existsSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DIST = join(__dirname, '../frontend/dist');
+// In Docker the dist is copied to ./frontend/dist; in local dev it lives at ../frontend/dist
+const DIST = existsSync(join(__dirname, 'frontend/dist'))
+  ? join(__dirname, 'frontend/dist')
+  : join(__dirname, '../frontend/dist');
 
 import newsRouter from './api/news.js';
 import chatRouter from './api/chat.js';
