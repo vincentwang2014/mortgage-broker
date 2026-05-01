@@ -2,6 +2,12 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import cron from 'node-cron';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DIST = join(__dirname, '../frontend/dist');
 
 import newsRouter from './api/news.js';
 import chatRouter from './api/chat.js';
@@ -35,6 +41,12 @@ app.use('/api/prequal', prequalRouter);
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Serve built frontend
+if (existsSync(DIST)) {
+  app.use(express.static(DIST));
+  app.get('*', (req, res) => res.sendFile(join(DIST, 'index.html')));
+}
 
 // Refresh news every 6 hours
 cron.schedule('0 */6 * * *', async () => {
