@@ -10,6 +10,7 @@ import subscribeRouter from './api/subscribe.js';
 import adminRouter from './api/admin.js';
 import agentsRouter from './api/agents.js';
 import documentsRouter from './api/documents.js';
+import prequalRouter from './api/prequal.js';
 import { sendWeeklyNewsletter } from './api/newsletter.js';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/subscribe', subscribeRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/agents', agentsRouter);
 app.use('/api/documents', documentsRouter);
+app.use('/api/prequal', prequalRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

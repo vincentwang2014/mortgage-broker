@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.jsx';
 import ChatPage from './pages/ChatPage.jsx';
 import NewsPage from './pages/NewsPage.jsx';
 import QuotePage from './pages/QuotePage.jsx';
+import PreQualPage from './pages/PreQualPage.jsx';
 import CalcPage from './pages/CalcPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 
@@ -27,7 +28,8 @@ function Nav() {
     { to: '/news', label: T.nav.news },
     { to: '/calc', label: T.nav.calc },
     { to: '/chat', label: T.nav.chat },
-    { to: '/quote', label: T.nav.quote, cta: true },
+    { to: '/quote', label: T.nav.quote },
+    { to: '/prequal', label: T.nav.prequal, cta: true },
   ];
 
   return (
@@ -101,6 +103,7 @@ export default function App() {
         <Route path="/news" element={<NewsPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/quote" element={<QuotePage />} />
+        <Route path="/prequal" element={<PreQualPage />} />
         <Route path="/calc" element={<CalcPage />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
