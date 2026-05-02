@@ -1,7 +1,26 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, ShieldCheck, Users, CheckCircle2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles, ShieldCheck, Users, CheckCircle2, BadgeCheck, Brain, FileCheck2, Home as HomeIcon, ChevronRight } from 'lucide-react';
 import { useLang } from '../App.jsx';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: 'easeOut' } },
+};
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09 } },
+};
+
+const HOW_ICONS = [HomeIcon, Brain, FileCheck2];
+
+const WHY_ITEMS = [
+  ['AI-powered guidance', 'Translate complex mortgage rules into clear next steps.', '/icons/svg/icon-ai-driven.svg'],
+  ['Real-time rate insight', 'Designed around fast scenario review and lender comparison.', '/icons/svg/icon-rate-insight.svg'],
+  ['Privacy-first start', 'Begin without SSN. Provide sensitive data only when needed.', '/icons/svg/icon-secure-form.svg'],
+  ['Expert support', 'AI helps organize; licensed mortgage professionals guide the decision.', '/icons/svg/icon-support.svg'],
+];
 
 function SubscribeModal({ onClose }) {
   const { T } = useLang();
@@ -59,6 +78,7 @@ function SubscribeModal({ onClose }) {
 export default function HomePage() {
   const { T } = useLang();
   const H = T.home;
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [subEmail, setSubEmail] = useState('');
   const [subStatus, setSubStatus] = useState('idle');
@@ -85,89 +105,223 @@ export default function HomePage() {
         <div className="container">
           <div className="hero-grid">
 
-            {/* Left column */}
-            <div className="hero-col-left">
-              <div className="hero-badge">{H.heroBadge}</div>
-              <h1>
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              animate="show"
+              className="hero-col-left"
+            >
+              <motion.div variants={fadeUp} className="hero-badge">{H.heroBadge}</motion.div>
+              <motion.h1 variants={fadeUp}>
                 {H.heroTitle1}<span>{H.heroHighlight}</span>{H.heroTitle2}
-              </h1>
-              <p className="hero-subtitle">{H.heroSub}</p>
-              <div className="hero-actions">
+              </motion.h1>
+              <motion.p variants={fadeUp} className="hero-subtitle">{H.heroSub}</motion.p>
+              <motion.div variants={fadeUp} className="hero-actions">
                 <Link to="/quote" className="btn btn-gold btn-lg btn-hero-primary">
                   {H.ctaQuote} <ArrowRight size={20} />
                 </Link>
                 <Link to="/chat" className="btn btn-hero-secondary btn-lg">
                   {H.ctaChat} <Sparkles size={20} />
                 </Link>
-              </div>
-              <div className="hero-trust">
+              </motion.div>
+              <motion.div variants={fadeUp} className="hero-trust">
                 {[ShieldCheck, Users, CheckCircle2].map((Icon, i) => (
                   <div key={i} className="trust-item">
                     <Icon size={15} />
                     {H.trustItems[i].replace(/^✓\s*/, '')}
                   </div>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
-            {/* Right column — brand card */}
-            <div className="hero-col-right">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+              className="hero-col-right"
+            >
               <div className="hero-brand-card-glow" />
-              <div className="hero-brand-card">
-                <img src="/logos/svg/logo-hero-dark.svg" alt="800 Home Loan" className="hero-card-logo" />
-                <div className="hero-card-stats">
-                  <div>
-                    <span className="hero-card-stat-num">{H.stat1}</span>
-                    <span className="hero-card-stat-label">Lenders</span>
-                  </div>
-                  <div>
-                    <span className="hero-card-stat-num">{H.stat2}</span>
-                    <span className="hero-card-stat-label">Limit</span>
-                  </div>
-                  <div>
-                    <span className="hero-card-stat-num">{H.stat3}</span>
-                    <span className="hero-card-stat-label">Credit</span>
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <div className="hero-brand-card">
+                  <img src="/logos/svg/logo-stacked-ultimate.svg" alt="800 Home Loan" className="hero-card-logo" />
+                  <div className="hero-card-stats">
+                    <div>
+                      <span className="hero-card-stat-num">{H.stat1}</span>
+                      <span className="hero-card-stat-label">{H.stat1Label}</span>
+                    </div>
+                    <div>
+                      <span className="hero-card-stat-num">{H.stat2}</span>
+                      <span className="hero-card-stat-label">{H.stat2Label}</span>
+                    </div>
+                    <div>
+                      <span className="hero-card-stat-num">{H.stat3}</span>
+                      <span className="hero-card-stat-label">{H.stat3Label}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+            </motion.div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trust Bar ── */}
+      <div className="trust-bar">
+        <div className="trust-bar-inner">
+          {['Modern', 'Trusted', 'AI-Driven', 'California Focused'].map(item => (
+            <div key={item} className="trust-bar-item">
+              <BadgeCheck size={16} style={{ color: 'var(--teal)', flexShrink: 0 }} />
+              {item}
             </div>
-
-          </div>
+          ))}
         </div>
-      </section>
-
-      {/* ── Services ── */}
-      <section className="section">
-        <div className="container">
-          <h2 style={{ marginBottom: '0.5rem' }}>{H.servicesTitle}</h2>
-          <p style={{ marginBottom: '2rem' }}>{H.servicesSub}</p>
-          <div className="card-grid card-grid-3">
-            {H.services.map(s => (
-              <div key={s.title} className="card">
-                <div className="service-icon">{s.icon}</div>
-                <h3 style={{ marginBottom: '0.5rem' }}>{s.title}</h3>
-                <p style={{ fontSize: '0.875rem' }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* ── How It Works ── */}
-      <section className="section" style={{ background: 'var(--white)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+      <motion.section
+        id="how-it-works"
+        className="how-section"
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-120px' }}
+        variants={stagger}
+      >
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <span className="section-eyebrow">{H.stepsEyebrow}</span>
-            <h2 style={{ marginTop: '0.5rem' }}>{H.stepsTitle}</h2>
+          <motion.div variants={fadeUp} className="how-intro">
+            <span className="section-eyebrow-teal">{H.stepsEyebrow}</span>
+            <h2>{H.stepsTitle}</h2>
+            <p className="how-sub">A clear path from question to quote without making the first step feel intimidating.</p>
+          </motion.div>
+          <div className="how-cards">
+            {H.steps.map((s, i) => {
+              const Icon = HOW_ICONS[i];
+              return (
+                <motion.div key={s.num} variants={fadeUp} className="how-card">
+                  <div className="how-card-icon">
+                    <Icon size={24} />
+                  </div>
+                  <div className="how-card-num">0{i + 1}</div>
+                  <h3>{s.title}</h3>
+                  <p>{s.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
-          <div className="steps-grid">
-            {H.steps.map(s => (
-              <div key={s.num} className="step">
-                <div className="step-num">{s.num}</div>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
+        </div>
+      </motion.section>
+
+      {/* ── Why 800 ── */}
+      <section id="why-why" className="why-section">
+        <div className="container">
+          <div className="why-grid">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={stagger}
+            >
+              <motion.span variants={fadeUp} className="section-eyebrow-teal">Why 800 Home Loan</motion.span>
+              <motion.h2 variants={fadeUp}>Smart guidance without losing the human advisor.</motion.h2>
+              <motion.p variants={fadeUp} className="why-sub">
+                Mortgage decisions still require trust, guidelines, and judgment. The AI layer makes the first step faster and clearer; the advisor helps borrowers move forward correctly.
+              </motion.p>
+            </motion.div>
+            <div className="why-cards">
+              {WHY_ITEMS.map(([title, text, src]) => (
+                <motion.div
+                  key={title}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.55 }}
+                  className="why-card"
+                >
+                  <img src={src} alt="" width={48} height={48} />
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Rate Quote ── */}
+      <section id="rate-quote" className="rate-section">
+        <div className="container">
+          <div className="rate-card">
+            <div>
+              <span className="section-eyebrow-teal">Rate Quote</span>
+              <h2>Get your starting point in minutes.</h2>
+              <p className="rate-sub">Low-friction intake designed to move borrowers into the right conversation without asking too much too early.</p>
+              <div className="rate-checklist">
+                <div className="rate-check-item"><CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />No SSN required to start</div>
+                <div className="rate-check-item"><CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />Purchase, refinance, and investor scenarios</div>
+                <div className="rate-check-item"><CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />Advisor review before final recommendation</div>
               </div>
-            ))}
+            </div>
+            <div className="rate-form-inner">
+              <div className="rate-form-fields">
+                {['Loan purpose', 'Property ZIP code', 'Estimated home price', 'Credit score range'].map((label, i) => (
+                  <div key={label} className="form-group">
+                    <label className="form-label rate-form-label">{label}</label>
+                    <input
+                      className="form-input rate-form-input"
+                      placeholder={i === 1 ? '90245' : i === 2 ? '$800,000' : 'Select option'}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => navigate('/quote')}
+                className="btn btn-gold btn-lg"
+                style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }}
+              >
+                {H.ctaQuote} <ArrowRight size={20} />
+              </button>
+              <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.75rem' }}>
+                Takes less than 2 minutes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── AI Advisor ── */}
+      <section id="ai-advisor" className="ai-section">
+        <div className="container">
+          <div className="ai-grid">
+            <div>
+              <span className="section-eyebrow-teal">AI Advisor</span>
+              <h2>Ask mortgage questions before you're ready to apply.</h2>
+              <p className="ai-sub">A softer first step for borrowers who need clarity before they complete a quote request.</p>
+              <Link to="/chat" className="btn btn-hero-secondary btn-lg" style={{ marginTop: '2rem', display: 'inline-flex' }}>
+                Talk to AI Advisor <ChevronRight size={20} />
+              </Link>
+            </div>
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="ai-chat-card"
+            >
+              <div className="ai-chat-inner">
+                <div className="ai-chat-header">
+                  <img src="/icons/svg/icon-ai-driven.svg" alt="" width={40} height={40} />
+                  <div>
+                    <div className="ai-chat-name">800 AI Advisor</div>
+                    <div className="ai-chat-sub">Mortgage guidance assistant</div>
+                  </div>
+                </div>
+                <div className="ai-messages">
+                  <div className="ai-message-user">Can I buy with 10% down if my credit score is around 720?</div>
+                  <div className="ai-message-bot">Possibly. The right path depends on property type, occupancy, reserves, and loan size.</div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
