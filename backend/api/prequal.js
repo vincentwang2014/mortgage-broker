@@ -207,7 +207,7 @@ router.post('/', async (req, res) => {
     `).join('');
   }
 
-  const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+  const fromEmail = process.env.NOTIFY_EMAIL || process.env.FROM_EMAIL || 'onboarding@resend.dev';
   const brokerEmail = process.env.BROKER_EMAIL;
 
   console.log(`[PreQual] Submission from ${fullName} <${f.email}> — RESEND_API_KEY: ${!!process.env.RESEND_API_KEY}, BROKER_EMAIL: ${brokerEmail || '(not set)'}, FROM_EMAIL: ${fromEmail}`);
