@@ -14,7 +14,7 @@ let _cacheAt = 0;
 const RSS_SOURCES = [
   { url: 'https://www.housingwire.com/feed/', name: 'HousingWire', category: 'market' },
   { url: 'https://www.consumerfinance.gov/about-us/newsroom/feed/', name: 'CFPB', category: 'regulatory' },
-  { url: 'https://www.nationalmortgagenews.com/feed', name: 'National Mortgage News', category: 'market' },
+  { url: 'https://themortgagereports.com/feed', name: 'The Mortgage Reports', category: 'market' },
   { url: 'https://calculatedriskblog.com/feeds/posts/default', name: 'Calculated Risk', category: 'market' },
   { url: 'https://www.scotsmanguide.com/feed/', name: "Scotsman Guide", category: 'rates' },
 ];
