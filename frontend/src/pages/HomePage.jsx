@@ -15,13 +15,6 @@ const stagger = {
 
 const HOW_ICONS = [HomeIcon, Brain, FileCheck2];
 
-const WHY_ITEMS = [
-  ['AI-powered guidance', 'Translate complex mortgage rules into clear next steps.', '/icons/svg/icon-ai-driven.svg'],
-  ['Real-time rate insight', 'Designed around fast scenario review and lender comparison.', '/icons/svg/icon-rate-insight.svg'],
-  ['Privacy-first start', 'Begin without SSN. Provide sensitive data only when needed.', '/icons/svg/icon-secure-form.svg'],
-  ['Expert support', 'AI helps organize; licensed mortgage professionals guide the decision.', '/icons/svg/icon-support.svg'],
-];
-
 function SubscribeModal({ onClose }) {
   const { T } = useLang();
   const M = T.modal;
@@ -172,7 +165,7 @@ export default function HomePage() {
       {/* ── Trust Bar ── */}
       <div className="trust-bar">
         <div className="trust-bar-inner">
-          {['Modern', 'Trusted', 'AI-Driven', 'California Focused'].map(item => (
+          {H.trustBarItems.map(item => (
             <div key={item} className="trust-bar-item">
               <BadgeCheck size={16} style={{ color: 'var(--teal)', flexShrink: 0 }} />
               {item}
@@ -194,7 +187,7 @@ export default function HomePage() {
           <motion.div variants={fadeUp} className="how-intro">
             <span className="section-eyebrow-teal">{H.stepsEyebrow}</span>
             <h2>{H.stepsTitle}</h2>
-            <p className="how-sub">A clear path from question to quote without making the first step feel intimidating.</p>
+            <p className="how-sub">{H.howSub}</p>
           </motion.div>
           <div className="how-cards">
             {H.steps.map((s, i) => {
@@ -225,13 +218,11 @@ export default function HomePage() {
               variants={stagger}
             >
               <motion.span variants={fadeUp} className="section-eyebrow-teal">Why 800 Home Loan</motion.span>
-              <motion.h2 variants={fadeUp}>Smart guidance without losing the human advisor.</motion.h2>
-              <motion.p variants={fadeUp} className="why-sub">
-                Mortgage decisions still require trust, guidelines, and judgment. The AI layer makes the first step faster and clearer; the advisor helps borrowers move forward correctly.
-              </motion.p>
+              <motion.h2 variants={fadeUp}>{H.whyTitle}</motion.h2>
+              <motion.p variants={fadeUp} className="why-sub">{H.whySub}</motion.p>
             </motion.div>
             <div className="why-cards">
-              {WHY_ITEMS.map(([title, text, src]) => (
+              {H.whyItems.map(([title, text, src]) => (
                 <motion.div
                   key={title}
                   initial={{ opacity: 0, y: 24 }}
@@ -256,12 +247,14 @@ export default function HomePage() {
           <div className="rate-card">
             <div>
               <span className="section-eyebrow-teal">Rate Quote</span>
-              <h2>Get your starting point in minutes.</h2>
-              <p className="rate-sub">Low-friction intake designed to move borrowers into the right conversation without asking too much too early.</p>
+              <h2>{H.rateTitle}</h2>
+              <p className="rate-sub">{H.rateSub}</p>
               <div className="rate-checklist">
-                <div className="rate-check-item"><CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />No SSN required to start</div>
-                <div className="rate-check-item"><CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />Purchase, refinance, and investor scenarios</div>
-                <div className="rate-check-item"><CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />Advisor review before final recommendation</div>
+                {H.rateChecklist.map(item => (
+                  <div key={item} className="rate-check-item">
+                    <CheckCircle2 size={18} style={{ color: 'var(--teal)', flexShrink: 0 }} />{item}
+                  </div>
+                ))}
               </div>
             </div>
             <div className="rate-form-inner">
@@ -297,8 +290,8 @@ export default function HomePage() {
           <div className="ai-grid">
             <div>
               <span className="section-eyebrow-teal">AI Advisor</span>
-              <h2>Ask mortgage questions before you're ready to apply.</h2>
-              <p className="ai-sub">A softer first step for borrowers who need clarity before they complete a quote request.</p>
+              <h2>{H.aiTitle}</h2>
+              <p className="ai-sub">{H.aiSub}</p>
               <Link to="/chat" className="btn btn-hero-secondary btn-lg" style={{ marginTop: '2rem', display: 'inline-flex' }}>
                 Talk to AI Advisor <ChevronRight size={20} />
               </Link>
@@ -317,8 +310,8 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="ai-messages">
-                  <div className="ai-message-user">Can I buy with 10% down if my credit score is around 720?</div>
-                  <div className="ai-message-bot">Possibly. The right path depends on property type, occupancy, reserves, and loan size.</div>
+                  <div className="ai-message-user">{H.aiChatUser}</div>
+                  <div className="ai-message-bot">{H.aiChatBot}</div>
                 </div>
               </div>
             </motion.div>

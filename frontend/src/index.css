@@ -764,6 +764,13 @@ p { color: var(--text-secondary); line-height: 1.7; }
   .message { max-width: 92%; }
   .result-grid { grid-template-columns: 1fr; }
   .page { min-height: calc(100vh - 76px); }
+  /* New homepage sections */
+  .how-section { padding: 3.5rem 0; }
+  .why-section { padding: 3.5rem 0; }
+  .rate-section { padding: 3.5rem 0; }
+  .ai-section   { padding: 3.5rem 0; }
+  .rate-card    { padding: 1.75rem 1.25rem; border-radius: 1.25rem; }
+  .ai-chat-card { border-radius: 1.25rem; }
 }
 @media (max-width: 480px) {
   .hero { padding: 3.5rem 0 3rem; }
@@ -771,6 +778,11 @@ p { color: var(--text-secondary); line-height: 1.7; }
   .hero-actions { flex-direction: column; align-items: center; }
   .btn-lg { width: 100%; justify-content: center; }
   .logo-nav { height: 32px; }
+  /* Tighten up new sections on small phones */
+  .how-cards { gap: 0.875rem; }
+  .why-cards  { gap: 0.875rem; }
+  .how-card, .why-card { padding: 1.25rem; }
+  .trust-bar-item { font-size: 0.8rem; padding: 0.625rem 0.75rem; }
 }
 
 /* ── Nav Scroll State ── */

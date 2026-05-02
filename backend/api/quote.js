@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
   if (process.env.RESEND_API_KEY && process.env.BROKER_EMAIL) {
     try {
       await getResend().emails.send({
-        from: `ClearPath Website <${process.env.FROM_EMAIL}>`,
+        from: `800 Home Loan <${process.env.NOTIFY_EMAIL || process.env.FROM_EMAIL}>`,
         to: process.env.BROKER_EMAIL,
         subject: `Rate Quote — ${params.purpose} · ${params.loanProgram} · FICO ${params.creditScore}`,
         html: `<html><body style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:1.5rem;color:#111">

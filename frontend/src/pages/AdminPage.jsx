@@ -104,6 +104,21 @@ const LABELS = {
     chatLogsGuidelines: 'Check Guideline Updates',
     chatLogsGuidelinesRunning: 'Checking...',
     chatLogsGuidelinesDone: (n) => `Added ${n} new guideline docs`,
+    // Submissions tab
+    tabSubmissions: 'Submissions',
+    subCount: 'pre-qual submissions',
+    subEmpty: 'No submissions yet.',
+    subLoadError: 'Failed to load submissions',
+    subExpand: 'Details',
+    subCollapse: 'Close',
+    // Subscribers tab
+    tabSubscribers: 'Subscribers',
+    subsActive: 'Active',
+    subsTotal: 'Total',
+    subsEmpty: 'No subscribers yet.',
+    subsLoadError: 'Failed to load subscribers',
+    subsStatusActive: 'Active',
+    subsStatusUnsubbed: 'Unsubscribed',
   },
   zh: {
     title: 'AI顾问后台管理',
@@ -207,6 +222,21 @@ const LABELS = {
     chatLogsGuidelines: '检查法规更新',
     chatLogsGuidelinesRunning: '检查中...',
     chatLogsGuidelinesDone: (n) => `已新增 ${n} 条法规文档`,
+    // Submissions tab
+    tabSubmissions: '预审申请',
+    subCount: '条预审申请',
+    subEmpty: '暂无申请记录。',
+    subLoadError: '加载申请失败',
+    subExpand: '详情',
+    subCollapse: '收起',
+    // Subscribers tab
+    tabSubscribers: '订阅用户',
+    subsActive: '活跃订阅',
+    subsTotal: '总计',
+    subsEmpty: '暂无订阅用户。',
+    subsLoadError: '加载订阅用户失败',
+    subsStatusActive: '已订阅',
+    subsStatusUnsubbed: '已退订',
   },
 };
 
@@ -1115,6 +1145,211 @@ function ChatLogsManager({ password, labels }) {
   );
 }
 
+// ── Submissions tab ───────────────────────────────────────────────────────────
+function SubmissionField({ label, value }) {
+  if (!value && value !== 0) return null;
+  return (
+    <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.82rem', padding: '0.3rem 0', borderBottom: '1px solid var(--cream-dark)' }}>
+      <span style={{ width: '38%', flexShrink: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{label}</span>
+      <span style={{ color: 'var(--text-secondary)', wordBreak: 'break-word' }}>{String(value)}</span>
+    </div>
+  );
+}
+
+function SubmissionCard({ s, labels }) {
+  const [open, setOpen] = useState(false);
+  const fullName = [s.firstName, s.lastName].filter(Boolean).join(' ') || '—';
+  const date = s.submittedAt ? new Date(s.submittedAt).toLocaleString() : '—';
+  const isPurchase = !s.purpose?.toLowerCase().includes('refi');
+  const tenure = [s.jobYears && `${s.jobYears} yr`, s.jobMonths && `${s.jobMonths} mo`].filter(Boolean).join(' ');
+  const usTime = [s.usYears && `${s.usYears} yr`, s.usMonths && `${s.usMonths} mo`].filter(Boolean).join(' ');
+
+  return (
+    <div className="card" style={{ marginBottom: '0.625rem', padding: '0.875rem 1rem' }}>
+      <div
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', cursor: 'pointer', flexWrap: 'wrap' }}
+        onClick={() => setOpen(v => !v)}
+      >
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+            <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{fullName}</span>
+            <span style={{ fontSize: '0.72rem', background: 'rgba(10,22,40,0.07)', color: 'var(--navy)', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>{s.purpose}</span>
+            {s.timeline && <span style={{ fontSize: '0.72rem', background: 'var(--cream-dark)', color: 'var(--text-muted)', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>{s.timeline}</span>}
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.email}{s.phone ? ` · ${s.phone}` : ''} · {date}</div>
+        </div>
+        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', flexShrink: 0 }}>
+          {open ? labels.subCollapse : labels.subExpand} {open ? '▲' : '▼'}
+        </span>
+      </div>
+
+      {open && (
+        <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'grid', gap: '1.5rem' }}>
+          <div>
+            <p style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--gold)', marginBottom: '0.5rem' }}>Contact</p>
+            <SubmissionField label="Name" value={fullName} />
+            <SubmissionField label="Phone" value={s.phone} />
+            <SubmissionField label="Email" value={s.email} />
+            <SubmissionField label="Preferred Contact" value={s.contactPref} />
+            <SubmissionField label="Best Time" value={s.bestTime} />
+            {s.hasCoborr && <>
+              <SubmissionField label="Co-Borrower" value={[s.cobFirstName, s.cobLastName].filter(Boolean).join(' ')} />
+              <SubmissionField label="Co-Borrower Email" value={s.cobEmail} />
+              <SubmissionField label="Co-Borrower Phone" value={s.cobPhone} />
+            </>}
+          </div>
+
+          <div>
+            <p style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--gold)', marginBottom: '0.5rem' }}>
+              {isPurchase ? 'Purchase Details' : 'Refinance Details'}
+            </p>
+            {isPurchase ? <>
+              <SubmissionField label="Purchase Price" value={s.purchasePrice} />
+              <SubmissionField label="Down Payment" value={s.downPayment} />
+              <SubmissionField label="Property Type" value={s.propType} />
+              <SubmissionField label="Credit Score" value={s.creditScore} />
+            </> : <>
+              <SubmissionField label="Loan Balance" value={s.currentBalance} />
+              <SubmissionField label="Home Value" value={s.homeValue} />
+              <SubmissionField label="Current Rate" value={s.currentRate} />
+              <SubmissionField label="Goal" value={s.refiGoal} />
+              <SubmissionField label="Credit Score" value={s.creditScore} />
+            </>}
+          </div>
+
+          <div>
+            <p style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--gold)', marginBottom: '0.5rem' }}>Employment & Income</p>
+            <SubmissionField label="Annual Salary" value={s.annualSalary} />
+            <SubmissionField label="Annual Bonus" value={s.annualBonus} />
+            <SubmissionField label="Job Tenure" value={tenure} />
+            <SubmissionField label="Self-Employed" value={s.selfEmployed} />
+            <SubmissionField label="Time in US" value={usTime} />
+            <SubmissionField label="Residency" value={s.residency} />
+          </div>
+
+          {(s.carLoan || s.studentLoan || s.otherDebts) && (
+            <div>
+              <p style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--gold)', marginBottom: '0.5rem' }}>Monthly Debts</p>
+              {s.carLoan && <SubmissionField label="Car Loan" value={s.carLoan === 'Yes' || s.carLoan === '是' ? `Yes — ${s.carLoanAmt}/mo` : 'No'} />}
+              {s.studentLoan && <SubmissionField label="Student Loan" value={s.studentLoan === 'Yes' || s.studentLoan === '是' ? `Yes — ${s.studentLoanAmt}/mo` : 'No'} />}
+              <SubmissionField label="Other Debts" value={s.otherDebts} />
+            </div>
+          )}
+
+          {s.notes && (
+            <div>
+              <p style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--gold)', marginBottom: '0.5rem' }}>Notes</p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, background: 'var(--cream)', padding: '0.75rem', borderRadius: '6px' }}>{s.notes}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SubmissionsManager({ password, labels }) {
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/admin/submissions', { headers: { 'x-admin-password': password } });
+        if (!res.ok) throw new Error();
+        setSubmissions(await res.json());
+      } catch { setLoadError(labels.subLoadError); }
+      finally { setLoading(false); }
+    }
+    load();
+  }, []);
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '3rem 0' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>;
+  if (loadError) return <p style={{ color: 'red', fontSize: '0.85rem' }}>{loadError}</p>;
+
+  return (
+    <div>
+      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+        {submissions.length} {labels.subCount}
+      </p>
+      {submissions.length === 0 && <div className="state-box"><p>{labels.subEmpty}</p></div>}
+      {submissions.map((s, i) => <SubmissionCard key={i} s={s} labels={labels} />)}
+    </div>
+  );
+}
+
+// ── Subscribers tab ───────────────────────────────────────────────────────────
+function SubscribersManager({ password, labels }) {
+  const [data, setData] = useState({ subscribers: [], activeCount: 0 });
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/admin/subscribers', { headers: { 'x-admin-password': password } });
+        if (!res.ok) throw new Error();
+        setData(await res.json());
+      } catch { setLoadError(labels.subsLoadError); }
+      finally { setLoading(false); }
+    }
+    load();
+  }, []);
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '3rem 0' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>;
+  if (loadError) return <p style={{ color: 'red', fontSize: '0.85rem' }}>{loadError}</p>;
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        {[
+          [data.activeCount, labels.subsActive, 'var(--navy)'],
+          [data.subscribers.length, labels.subsTotal, 'var(--text-secondary)'],
+        ].map(([num, lbl, color]) => (
+          <div key={lbl} className="card" style={{ padding: '0.875rem 1.5rem', textAlign: 'center', minWidth: '100px' }}>
+            <div style={{ fontSize: '1.75rem', fontWeight: 700, color }}>{num}</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.25rem' }}>{lbl}</div>
+          </div>
+        ))}
+      </div>
+
+      {data.subscribers.length === 0 && <div className="state-box"><p>{labels.subsEmpty}</p></div>}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+        {data.subscribers.map((s, i) => (
+          <div key={i} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '0.625rem 1rem', background: 'var(--white)',
+            border: '1px solid var(--border)', borderRadius: '8px',
+            gap: '1rem', flexWrap: 'wrap',
+            opacity: s.active ? 1 : 0.55,
+          }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ fontWeight: 500, fontSize: '0.875rem' }}>{s.email}</span>
+              {s.name && <span style={{ marginLeft: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>{s.name}</span>}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+              <span style={{
+                fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '100px', fontWeight: 500,
+                background: s.active ? 'rgba(16,185,129,0.12)' : 'var(--cream-dark)',
+                color: s.active ? '#059669' : 'var(--text-muted)',
+              }}>
+                {s.active ? labels.subsStatusActive : labels.subsStatusUnsubbed}
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                {new Date(s.subscribedAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Admin page ────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const { lang } = useLang();
@@ -1122,7 +1357,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [authed, setAuthed] = useState(false);
   const [loginError, setLoginError] = useState('');
-  const [tab, setTab] = useState('agents');
+  const [tab, setTab] = useState('submissions');
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -1158,6 +1393,8 @@ export default function AdminPage() {
   }
 
   const tabs = [
+    { key: 'submissions', label: L.tabSubmissions },
+    { key: 'subscribers', label: L.tabSubscribers },
     { key: 'agents', label: L.tabAgents },
     { key: 'documents', label: L.tabDocuments },
     { key: 'chatlogs', label: L.tabChatLogs },
@@ -1196,6 +1433,10 @@ export default function AdminPage() {
           </button>
         ))}
       </div>
+
+      {tab === 'submissions' && <SubmissionsManager password={password} labels={L} />}
+
+      {tab === 'subscribers' && <SubscribersManager password={password} labels={L} />}
 
       {tab === 'agents' && <AgentsManager password={password} labels={L} />}
 
