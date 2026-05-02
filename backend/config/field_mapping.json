@@ -1,0 +1,93 @@
+{
+  "version": "2026-05-v1",
+  "page": "loansifter_pricing_search",
+  "note": "Selectors are placeholders — verify against live Loansifter UI before first Playwright run",
+  "fields": {
+    "loan_purpose": {
+      "selector": "#loanPurpose",
+      "type": "select",
+      "options": {
+        "purchase": "Purchase",
+        "refinance": "Rate/Term Refinance",
+        "cash_out_refinance": "Cash Out Refinance"
+      }
+    },
+    "loan_amount": {
+      "selector": "#loanAmount",
+      "type": "input",
+      "transform": "number"
+    },
+    "purchase_price": {
+      "selector": "#purchasePrice",
+      "type": "input",
+      "transform": "number"
+    },
+    "property_value": {
+      "selector": "#propertyValue",
+      "type": "input",
+      "transform": "number"
+    },
+    "ltv": {
+      "selector": "#ltv",
+      "type": "input",
+      "transform": "percent"
+    },
+    "fico_for_pricing": {
+      "selector": "#creditScore",
+      "type": "select",
+      "options": {
+        "760": "760",
+        "740": "740",
+        "720": "720",
+        "700": "700",
+        "680": "680",
+        "660": "660",
+        "640": "640"
+      }
+    },
+    "property_type": {
+      "selector": "#propertyType",
+      "type": "select",
+      "options": {
+        "single_family": "Single Family",
+        "condo": "Condo",
+        "two_to_four_units": "2-4 Units",
+        "investment_property": "Investment Property"
+      }
+    },
+    "occupancy": {
+      "selector": "#occupancy",
+      "type": "select",
+      "options": {
+        "primary": "Primary Residence",
+        "second_home": "Second Home",
+        "investment": "Investment Property"
+      }
+    },
+    "state": {
+      "selector": "#state",
+      "type": "select",
+      "options": {
+        "CA": "California"
+      }
+    },
+    "lock_days": {
+      "selector": "#lockPeriod",
+      "type": "select",
+      "options": {
+        "30": "30",
+        "45": "45",
+        "60": "60"
+      }
+    },
+    "term": {
+      "selector": "#loanTerm",
+      "type": "select",
+      "options": {
+        "30_year_fixed": "30 Year Fixed",
+        "15_year_fixed": "15 Year Fixed",
+        "arm_5_1": "5/1 ARM"
+      }
+    }
+  }
+}

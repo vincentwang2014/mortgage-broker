@@ -22,6 +22,7 @@ import documentsRouter from './api/documents.js';
 import prequalRouter from './api/prequal.js';
 import chatlogRouter from './api/chatlog.js';
 import guidelinesRouter from './api/guidelines.js';
+import pricingJobsRouter from './api/pricingJobs.js';
 import { sendWeeklyNewsletter } from './api/newsletter.js';
 
 const app = express();
@@ -44,6 +45,7 @@ app.use('/api/documents', documentsRouter);
 app.use('/api/prequal', prequalRouter);
 app.use('/api/chatlog', chatlogRouter);
 app.use('/api/guidelines', guidelinesRouter);
+app.use('/api/pricing-jobs', pricingJobsRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -76,6 +78,18 @@ cron.schedule('0 14 * * 1', async () => {
     console.log(`[CRON] Guidelines: ${results.length} new docs added`);
   } catch (e) {
     console.error('[CRON] Guideline check failed:', e.message);
+  }
+});
+
+// Daily Loansifter session health check at 9am PT (17:00 UTC)
+cron.schedule('0 17 * * *', async () => {
+  console.log('[CRON] Loansifter session health check...');
+  try {
+    const { runHealthCheck } = await import('./services/sessionHealthCheck.js');
+    const status = await runHealthCheck();
+    console.log(`[CRON] Session status: ${status.status}`);
+  } catch (e) {
+    console.error('[CRON] Session health check failed:', e.message);
   }
 });
 

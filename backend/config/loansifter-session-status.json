@@ -1,0 +1,6 @@
+{
+  "status": "login_required",
+  "last_checked_at": null,
+  "last_successful_login_at": null,
+  "error": "Session not yet initialized — manual login required"
+}

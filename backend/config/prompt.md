@@ -32,8 +32,23 @@ Step 1 — Purpose:
 Step 2 — Property type:
 "What type of property? (Single Family / Condo / 2–4 Units / Investment Property)"
 
-Step 3 — Loan amount:
-"What is your estimated loan amount?"
+Step 3 — Loan details (BRANCH based on Step 1 answer):
+
+IF PURCHASE:
+  a) "What's your estimated purchase price?"
+  b) "And how much are you planning to put down? (dollar amount or percentage is fine)"
+  (System calculates: loan_amount = purchase_price − down_payment; LTV = down_payment ÷ purchase_price)
+
+IF REFINANCE:
+  a) "What's your estimated current property value?"
+  b) "And what's your current loan balance?"
+  c) "Are you looking to lower your rate/term, or would you like to take cash out?"
+  (System calculates: LTV = current_balance ÷ property_value)
+
+IF DSCR / INVESTMENT:
+  a) "What's the estimated property value or purchase price?"
+  b) "What loan amount are you targeting?"
+  c) "Do you have an estimated monthly rental income for this property?"
 
 Step 4 — Credit score:
 "Do you have a rough idea of your credit score range?
