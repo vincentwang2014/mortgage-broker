@@ -1,0 +1,4 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="ig" x1="8" y1="8" x2="56" y2="56"><stop stop-color="#1D4ED8"/><stop offset="1" stop-color="#2EC4B6"/></linearGradient></defs>
+<rect x="1" y="1" width="62" height="62" rx="18" fill="#0F172A" stroke="rgba(255,255,255,.10)"/>
+<g stroke="url(#ig)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12l17 7v11c0 12-7 19-17 22-10-3-17-10-17-22V19l17-7z"/><path d="M24 32l5 5 11-12"/></g></svg>
