@@ -1,0 +1,75 @@
+<svg width="640" height="560" viewBox="0 0 640 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="g" x1="70" y1="80" x2="570" y2="80" gradientUnits="userSpaceOnUse">
+    <stop offset="0%" stop-color="#1D4ED8"/>
+    <stop offset="52%" stop-color="#2563EB"/>
+    <stop offset="100%" stop-color="#2EC4B6"/>
+  </linearGradient>
+
+  <filter id="logoGlow" x="-18%" y="-18%" width="136%" height="136%">
+    <feGaussianBlur stdDeviation="3.2" result="blur"/>
+    <feColorMatrix
+      in="blur"
+      type="matrix"
+      values="
+        0 0 0 0 0.10
+        0 0 0 0 0.38
+        0 0 0 0 0.95
+        0 0 0 .18 0"
+    />
+    <feMerge>
+      <feMergeNode/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+
+<rect width="640" height="560" fill="#0F172A"/>
+
+<!-- 800 mark: visual column width = 500px, from x=70 to x=570 -->
+<g transform="translate(70,76)" filter="url(#logoGlow)">
+  <g stroke="url(#g)" stroke-width="15" fill="none">
+    <rect x="0" y="0" width="140" height="220" rx="26"/>
+    <rect x="180" y="0" width="140" height="220" rx="26"/>
+    <rect x="360" y="0" width="140" height="220" rx="26"/>
+  </g>
+
+  <g fill="url(#g)">
+    <rect x="46" y="44" width="48" height="44" rx="8"/>
+    <rect x="46" y="132" width="48" height="44" rx="8"/>
+
+    <rect x="232" y="58" width="36" height="104" rx="12"/>
+    <rect x="412" y="58" width="36" height="104" rx="12"/>
+  </g>
+</g>
+
+<!-- Width-locked wordmark:
+     Centered at x=320.
+     Font size and tracking reduced so HOME LOAN does not exceed the 800 mark width.
+-->
+<text
+  x="320"
+  y="376"
+  text-anchor="middle"
+  font-family="Inter, Arial, Helvetica, sans-serif"
+  font-size="52"
+  font-weight="500"
+  letter-spacing="15"
+  fill="#FFFFFF"
+>
+  HOME LOAN
+</text>
+
+<text
+  x="320"
+  y="426"
+  text-anchor="middle"
+  font-family="Inter, Arial, Helvetica, sans-serif"
+  font-size="18"
+  font-weight="500"
+  letter-spacing="6"
+  fill="#94A3B8"
+>
+  YOUR SMARTEST WAY HOME
+</text>
+</svg>

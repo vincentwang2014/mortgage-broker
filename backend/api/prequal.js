@@ -207,14 +207,19 @@ router.post('/', async (req, res) => {
     `).join('');
   }
 
-  if (process.env.RESEND_API_KEY && process.env.BROKER_EMAIL) {
+  const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+  const brokerEmail = process.env.BROKER_EMAIL;
+
+  console.log(`[PreQual] Submission from ${fullName} <${f.email}> — RESEND_API_KEY: ${!!process.env.RESEND_API_KEY}, BROKER_EMAIL: ${brokerEmail || '(not set)'}, FROM_EMAIL: ${fromEmail}`);
+
+  if (process.env.RESEND_API_KEY && brokerEmail) {
     try {
       const pdfBuffer = await generatePDF(f, fullName, submittedAt);
       const pdfFilename = `prequal-${fullName.replace(/\s+/g, '-')}-${new Date(submittedAt).toISOString().slice(0, 10)}.pdf`;
 
-      await getResend().emails.send({
-        from: `800 Home Loan <${process.env.FROM_EMAIL}>`,
-        to: process.env.BROKER_EMAIL,
+      const result = await getResend().emails.send({
+        from: `800 Home Loan <${fromEmail}>`,
+        to: brokerEmail,
         subject: `Pre-Approval Request — ${fullName} · ${f.purpose} · ${f.timeline}`,
         attachments: [{
           filename: pdfFilename,
@@ -291,9 +296,17 @@ router.post('/', async (req, res) => {
           <p style="font-size:0.75rem;color:#9ca3af;margin-top:1.5rem">Submitted ${submittedAtPT} PT</p>
         </body></html>`,
       });
+
+      if (result?.error) {
+        console.error('[PreQual] Resend rejected email:', JSON.stringify(result.error));
+      } else {
+        console.log(`[PreQual] Email sent OK → ${brokerEmail} (id: ${result?.data?.id})`);
+      }
     } catch (e) {
-      console.error('[PreQual] Email failed:', e.message);
+      console.error('[PreQual] Email exception:', e.message, e?.response?.data || '');
     }
+  } else {
+    console.warn(`[PreQual] Email skipped — RESEND_API_KEY: ${!!process.env.RESEND_API_KEY}, BROKER_EMAIL: ${brokerEmail || '(not set)'}`);
   }
 
   res.json({ ok: true });
