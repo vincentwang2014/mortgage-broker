@@ -73,8 +73,14 @@ export const translations = {
         { text: 'The AI advisor answered every question instantly. Hands down the best mortgage experience I\'ve had.', name: 'Linda C.', loc: 'Irvine, CA' },
         { text: 'As a self-employed buyer, finding the right DSCR loan was a game-changer. 800 Home Loan made it simple.', name: 'David R.', loc: 'Los Angeles, CA' },
       ],
-      ctaBottomTitle: 'Ready to Find Your Rate?',
-      ctaBottomSub: 'No SSN. No credit pull. No commitment — just clear answers in minutes.',
+      credentialItems: [
+        { label: 'Licensed Mortgage Broker', value: 'California (Primary) · Business Purpose: Multi-State' },
+        { label: 'NMLS# 1531927 · CalBRE# 02026366', value: 'Licensed & Regulated' },
+        { label: '40+ Lender Partners', value: 'Competitive options across major programs' },
+      ],
+      credentialsDisclaimer: 'Multi-state availability subject to loan program and lender guidelines. Not all products available in all states.',
+      ctaBottomTitle: 'Ready to See What You Qualify For?',
+      ctaBottomSub: 'No SSN required. No credit pull. Free consultation — get matched with the right loan in minutes.',
     },
     chat: {
       title: 'AI Mortgage Advisor',
@@ -82,6 +88,7 @@ export const translations = {
       greeting: "Hi! I'm 800 Home Loan's AI mortgage advisor. Ask me anything about loan programs, qualification, rates, or the homebuying process.",
       placeholder: 'Ask about rates, programs, qualification...',
       send: 'Send',
+      prequalCta: 'Start Pre-Qualification →',
       prompts: [
         "What credit score do I need to buy a home?",
         "How much down payment do I need?",
@@ -324,8 +331,14 @@ export const translations = {
         { text: 'AI顾问即时解答了我所有问题，是我经历过最顺畅的贷款申请体验。', name: '林女士', loc: '加州尔湾' },
         { text: '作为自雇人士，在这里找到DSCR贷款方案非常及时，整个过程简单顺畅。', name: '王先生', loc: '加州洛杉矶' },
       ],
-      ctaBottomTitle: '准备好查询您的利率了吗？',
-      ctaBottomSub: '无需社安号，无征信查询，零承诺 — 几分钟内获得清晰答案。',
+      credentialItems: [
+        { label: '持牌贷款经纪', value: '加州（主要） · 商业用途贷款：多州' },
+        { label: 'NMLS# 1531927 · CalBRE# 02026366', value: '持牌合规经营' },
+        { label: '40+合作贷款机构', value: '覆盖主流贷款类型，方案具竞争力' },
+      ],
+      credentialsDisclaimer: '*多州服务视具体贷款项目及合作机构政策而定，非所有产品在所有州均可申请。',
+      ctaBottomTitle: '准备好了解您的贷款方案了吗？',
+      ctaBottomSub: '无需社安号，无征信查询，免费咨询 — 几分钟内了解适合您的贷款。',
     },
     chat: {
       title: 'AI贷款顾问',
@@ -333,6 +346,7 @@ export const translations = {
       greeting: '您好！我是 800 贷款的AI顾问。关于贷款类型、申请资质、利率或购房流程，欢迎随时提问，我会给您提供清晰具体的解答。',
       placeholder: '咨询利率、贷款类型、申请条件...',
       send: '发送',
+      prequalCta: '开始资格预审 →',
       prompts: [
         '买房需要什么信用分？',
         '首付需要多少钱？',

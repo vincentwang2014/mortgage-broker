@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useLang } from '../App.jsx';
 
 export default function ChatPage() {
@@ -165,7 +166,21 @@ export default function ChatPage() {
       <div className="chat-messages">
         {messages.map((m, i) => (
           <div key={i} className={`message message-${m.role}`}>
-            {m.content.split('\n').map((line, j, arr) => (
+            {m.role === 'assistant' && m.content.includes('[CTA_PREQUAL]') ? (() => {
+              const [text] = m.content.split('[CTA_PREQUAL]');
+              return (
+                <>
+                  {text.trim().split('\n').map((line, j, arr) => (
+                    <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
+                  ))}
+                  <div style={{ marginTop: '1rem' }}>
+                    <Link to="/prequal" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', padding: '0.6rem 1.25rem' }}>
+                      {C.prequalCta}
+                    </Link>
+                  </div>
+                </>
+              );
+            })() : m.content.split('\n').map((line, j, arr) => (
               <span key={j}>{line}{j < arr.length - 1 && <br />}</span>
             ))}
           </div>

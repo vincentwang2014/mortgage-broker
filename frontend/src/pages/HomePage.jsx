@@ -174,6 +174,36 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── Credentials ── */}
+      <section className="credentials-section">
+        <div className="container">
+          <div className="credentials-grid">
+            <div className="credential-card">
+              <ShieldCheck size={22} className="credential-icon" />
+              <div>
+                <div className="credential-label">{H.credentialItems[0].label}</div>
+                <div className="credential-value">{H.credentialItems[0].value}</div>
+              </div>
+            </div>
+            <div className="credential-card">
+              <BadgeCheck size={22} className="credential-icon" />
+              <div>
+                <div className="credential-label">{H.credentialItems[1].label}</div>
+                <div className="credential-value">{H.credentialItems[1].value}</div>
+              </div>
+            </div>
+            <div className="credential-card">
+              <Users size={22} className="credential-icon" />
+              <div>
+                <div className="credential-label">{H.credentialItems[2].label}</div>
+                <div className="credential-value">{H.credentialItems[2].value}</div>
+              </div>
+            </div>
+          </div>
+          <p className="credentials-disclaimer">{H.credentialsDisclaimer}</p>
+        </div>
+      </section>
+
       {/* ── How It Works ── */}
       <motion.section
         id="how-it-works"
@@ -377,7 +407,7 @@ export default function HomePage() {
           <h2>{H.ctaBottomTitle}</h2>
           <p>{H.ctaBottomSub}</p>
           <div className="hero-actions">
-            <Link to="/quote" className="btn btn-gold btn-lg">{H.ctaQuote}</Link>
+            <Link to="/prequal" className="btn btn-gold btn-lg">{H.ctaQuote}</Link>
             <Link to="/chat" className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)' }}>
               {H.ctaChat}
             </Link>
