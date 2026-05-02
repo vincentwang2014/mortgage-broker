@@ -476,16 +476,6 @@ export default function PreQualPage() {
           </div>
         </div>
 
-        {/* ── Documents reminder ── */}
-        <div className="form-section" style={{ background: 'var(--cream)', border: '1px solid var(--border)' }}>
-          <div className="form-section-title" style={{ color: 'var(--gold)' }}>{P.docsTitle}</div>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-            {P.docs.map((d, i) => (
-              <li key={i} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{d}</li>
-            ))}
-          </ul>
-        </div>
-
         {/* ── 7. Notes ── */}
         <div className="form-section">
           <div className="form-section-title">{P.sec7}</div>
