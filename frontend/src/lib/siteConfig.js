@@ -13,11 +13,11 @@ const siteConfig = {
   taglineZh: '加州持牌贷款经纪',
 
   // 执照号 / License
-  nmls: '#______',
+  nmls: 'NMLS# 1531927 | CalBRE# 02026366',
 
   // 联系方式 / Contact (displayed in footer, optional)
-  phone: '',
-  email: '',
+  phone: '310-800-2698',
+  email: 'vincentwangmortgage@gmail.com',
 };
 
 export default siteConfig;

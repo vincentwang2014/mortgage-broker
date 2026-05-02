@@ -110,7 +110,7 @@ export default function HomePage() {
               </motion.h1>
               <motion.p variants={fadeUp} className="hero-subtitle">{H.heroSub}</motion.p>
               <motion.div variants={fadeUp} className="hero-actions">
-                <Link to="/quote" className="btn btn-gold btn-lg btn-hero-primary">
+                <Link to="/prequal" className="btn btn-gold btn-lg btn-hero-primary">
                   {H.ctaQuote} <ArrowRight size={20} />
                 </Link>
                 <Link to="/chat" className="btn btn-hero-secondary btn-lg">
