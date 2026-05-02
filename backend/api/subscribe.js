@@ -1,79 +1,85 @@
 import express from 'express';
-import { kv } from '@vercel/kv';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { Resend } from 'resend';
 
 const router = express.Router();
+const __dir = dirname(fileURLToPath(import.meta.url));
+// DATA_PATH env var lets Railway point this at the mounted volume
+const DATA_DIR = process.env.DATA_PATH || join(__dir, '../../data');
+const SUBS_FILE = join(DATA_DIR, 'subscribers.json');
+
 function getResend() { return new Resend(process.env.RESEND_API_KEY || 'placeholder'); }
+
+function readSubs() {
+  try {
+    if (!existsSync(SUBS_FILE)) return {};
+    return JSON.parse(readFileSync(SUBS_FILE, 'utf8'));
+  } catch { return {}; }
+}
+
+function writeSubs(data) {
+  try {
+    if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+    writeFileSync(SUBS_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) { console.warn('[Subs] File write failed:', e.message); }
+}
 
 router.post('/', async (req, res) => {
   const { email, name } = req.body;
   if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' });
 
-  const subscriber = {
-    email: email.toLowerCase().trim(),
-    name: name?.trim() || '',
-    subscribedAt: new Date().toISOString(),
-    active: true,
-  };
+  const normalized = email.toLowerCase().trim();
+  const subs = readSubs();
+  subs[normalized] = { email: normalized, name: name?.trim() || '', subscribedAt: new Date().toISOString(), active: true };
+  writeSubs(subs);
 
   try {
-    const key = `subscribers:${subscriber.email.replace('@', '_at_')}`;
-    await kv.set(key, JSON.stringify(subscriber));
-    await kv.sadd('subscribers:list', subscriber.email);
-
     if (process.env.RESEND_API_KEY) {
       await getResend().emails.send({
-        from: `ClearPath Mortgage <${process.env.FROM_EMAIL || 'newsletter@clearpathmortgage.com'}>`,
-        to: subscriber.email,
-        subject: 'Welcome to ClearPath Mortgage Weekly',
-        html: `<html><body style="margin:0;background:#f8f5f0;font-family:'Helvetica Neue',Arial,sans-serif">
+        from: `800 Home Loan <${process.env.FROM_EMAIL || 'newsletter@800homeloan.com'}>`,
+        to: normalized,
+        subject: 'Welcome to 800 Home Loan Weekly',
+        html: `<html><body style="margin:0;background:#0F172A;font-family:'Helvetica Neue',Arial,sans-serif">
           <div style="max-width:560px;margin:0 auto;padding:2rem 1rem">
-            <div style="background:#0a1628;border-radius:12px 12px 0 0;padding:2rem;text-align:center">
-              <h1 style="color:#c9a96e;margin:0;font-size:1.5rem">ClearPath Mortgage</h1>
+            <div style="background:linear-gradient(90deg,#1D4ED8,#2EC4B6);border-radius:12px 12px 0 0;padding:2rem;text-align:center">
+              <h1 style="color:white;margin:0;font-size:1.5rem">800 Home Loan</h1>
+              <p style="color:rgba(255,255,255,0.7);margin:0.25rem 0 0;font-size:0.8rem">Your Smartest Way Home</p>
             </div>
-            <div style="background:white;padding:2rem;border-radius:0 0 12px 12px;border:1px solid #e2ddd6;border-top:none">
-              <h2>Welcome, ${subscriber.name || 'there'}!</h2>
-              <p>You're subscribed to ClearPath Mortgage Weekly — every Tuesday morning.</p>
-              <ul><li>Rate movements</li><li>Market trends</li><li>Guideline updates</li></ul>
-              <a href="${process.env.FRONTEND_URL || 'https://clearpathmortgage.com'}"
-                 style="background:#0a1628;color:white;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;display:inline-block;margin-top:1rem">
-                Visit Our Site
+            <div style="background:white;padding:2rem;border-radius:0 0 12px 12px">
+              <h2 style="color:#0B1F3A">Welcome, ${name?.trim() || 'there'}!</h2>
+              <p style="color:#4a5568">You're subscribed to 800 Home Loan Weekly — every Tuesday morning.</p>
+              <ul style="color:#4a5568"><li>Rate movements</li><li>Market trends</li><li>Guideline updates</li></ul>
+              <a href="${process.env.FRONTEND_URL || 'https://800homeloan.com'}"
+                 style="background:linear-gradient(90deg,#1D4ED8,#2EC4B6);color:white;padding:0.75rem 2rem;border-radius:8px;text-decoration:none;display:inline-block;margin-top:1rem">
+                Visit 800 Home Loan
               </a>
             </div>
           </div>
         </body></html>`,
       });
     }
-    res.json({ success: true, message: 'Subscribed successfully!' });
+    res.json({ success: true });
   } catch (e) {
-    console.error('[Subscribe]', e);
-    res.status(500).json({ error: 'Subscription failed' });
+    console.error('[Subscribe email]', e.message);
+    res.json({ success: true }); // subscriber saved even if welcome email fails
   }
 });
 
 router.get('/unsubscribe', async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).send('Missing email');
-  try {
-    const key = `subscribers:${email.replace('@', '_at_')}`;
-    const data = await kv.get(key);
-    if (data) {
-      const sub = typeof data === 'string' ? JSON.parse(data) : data;
-      sub.active = false;
-      await kv.set(key, JSON.stringify(sub));
-      await kv.srem('subscribers:list', email);
-    }
-    res.send('<html><body style="font-family:sans-serif;text-align:center;padding:3rem"><h2>Unsubscribed</h2><p>You\'ve been removed from ClearPath Mortgage Weekly.</p></body></html>');
-  } catch (e) {
-    res.status(500).send('Error processing unsubscribe');
-  }
+  const subs = readSubs();
+  const key = email.toLowerCase().trim();
+  if (subs[key]) { subs[key].active = false; writeSubs(subs); }
+  res.send('<html><body style="font-family:sans-serif;text-align:center;padding:3rem"><h2>Unsubscribed</h2><p>You\'ve been removed from 800 Home Loan Weekly.</p></body></html>');
 });
 
-router.get('/count', async (req, res) => {
-  try {
-    const count = await kv.scard('subscribers:list');
-    res.json({ count });
-  } catch { res.json({ count: 0 }); }
+router.get('/count', (_req, res) => {
+  const subs = readSubs();
+  const count = Object.values(subs).filter(s => s.active).length;
+  res.json({ count });
 });
 
 export default router;

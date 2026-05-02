@@ -13,10 +13,10 @@ let _cacheAt = 0;
 
 const RSS_SOURCES = [
   { url: 'https://www.housingwire.com/feed/', name: 'HousingWire', category: 'market' },
-  { url: 'https://www.mortgagenewsdaily.com/feeds/fnm.rss', name: 'Mortgage News Daily', category: 'rates' },
   { url: 'https://www.consumerfinance.gov/about-us/newsroom/feed/', name: 'CFPB', category: 'regulatory' },
-  { url: 'https://www.freddiemac.com/research/rss', name: 'Freddie Mac', category: 'market' },
-  { url: 'https://mba.org/news-research-and-resources/rss', name: 'MBA', category: 'market' },
+  { url: 'https://www.nationalmortgagenews.com/feed', name: 'National Mortgage News', category: 'market' },
+  { url: 'https://calculatedriskblog.com/feeds/posts/default', name: 'Calculated Risk', category: 'market' },
+  { url: 'https://www.scotsmanguide.com/feed/', name: "Scotsman Guide", category: 'rates' },
 ];
 
 async function fetchRSSFeed(source) {
