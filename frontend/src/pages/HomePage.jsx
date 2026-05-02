@@ -146,7 +146,7 @@ export default function HomePage() {
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <div className="hero-brand-card">
-                  <img src="/logos/svg/logo-stacked-ultimate.svg" alt="800 Home Loan" className="hero-card-logo" />
+                  <img src="/logos/svg/logo-stacked-optical-aligned-transparent.svg" alt="800 Home Loan" className="hero-card-logo" />
                   <div className="hero-card-stats">
                     <div>
                       <span className="hero-card-stat-num">{H.stat1}</span>
