@@ -3,6 +3,13 @@ import { useLang } from '../App.jsx';
 
 const CAT_KEYS = ['all', 'rates', 'market', 'regulatory', 'other'];
 
+// Module-level cache: survives React Router navigations within the same session.
+// The skeleton only shows once per 5 minutes instead of on every tab visit.
+let _cache = null;
+let _cacheAt = 0;
+const CACHE_TTL = 5 * 60 * 1000;
+const cacheIsFresh = () => _cache !== null && Date.now() - _cacheAt < CACHE_TTL;
+
 function ShareMenu({ article }) {
   const { T } = useLang();
   const N = T.news;
@@ -107,24 +114,31 @@ function NewsSkeleton() {
 export default function NewsPage() {
   const { T } = useLang();
   const N = T.news;
-  const [articles, setArticles] = useState([]);
+  const [allArticles, setAllArticles] = useState(_cache || []);
   const [category, setCategory] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!cacheIsFresh());
   const [error, setError] = useState(null);
 
+  // Only fetch from the server when the module-level cache is stale.
+  // Category changes filter in-memory — no new network request.
   useEffect(() => {
+    if (cacheIsFresh()) return;
     async function load() {
       setLoading(true); setError(null);
       try {
-        const res = await fetch(`/api/news${category !== 'all' ? `?category=${category}` : ''}`);
+        const res = await fetch('/api/news');
         if (!res.ok) throw new Error('Failed to load news');
         const data = await res.json();
-        setArticles(data.articles || []);
+        _cache = data.articles || [];
+        _cacheAt = Date.now();
+        setAllArticles(_cache);
       } catch (e) { setError(e.message); }
       finally { setLoading(false); }
     }
     load();
-  }, [category]);
+  }, []);
+
+  const articles = category === 'all' ? allArticles : allArticles.filter(a => a.category === category);
 
   return (
     <div className="page news-page">
